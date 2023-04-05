@@ -1,8 +1,8 @@
 <?php
 $host = "localhost";
-$username = "meinBenutzername";
-$password = "meinPasswort";
-$dbname = "meineDatenbank";
+$username = "bif2webscriptinguser";
+$password = "bif2021";
+$dbname = "webprojekt";
 $conn = mysqli_connect($host, $username, $password, $dbname);
 
 if (!$conn) {
