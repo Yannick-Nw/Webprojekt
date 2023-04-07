@@ -1,5 +1,6 @@
 <?php 
-require_once ("dataHandler.php");
+require_once ("db/dataHandler.php");
 $result = new DataHandler();
-$test = json_encode($result);
+$appointments = $result->queryAppointments();
+$test = json_encode($appointments);
 echo $test;
