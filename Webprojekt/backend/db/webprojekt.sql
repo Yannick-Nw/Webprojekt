@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 05. Apr 2023 um 11:55
+-- Erstellungszeit: 07. Apr 2023 um 18:15
 -- Server-Version: 10.4.27-MariaDB
 -- PHP-Version: 8.2.0
 
@@ -29,11 +29,11 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `appointments` (
   `id` int(11) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `location` varchar(255) NOT NULL,
-  `start_date` datetime NOT NULL,
-  `end_date` datetime NOT NULL,
-  `voting_end_date` datetime NOT NULL
+  `title` varchar(255) DEFAULT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `start_date` datetime DEFAULT NULL,
+  `end_date` datetime DEFAULT NULL,
+  `voting_end_date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -153,3 +153,6 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+GRANT USAGE ON *.* TO `bif2webscriptinguser`@`localhost` IDENTIFIED BY PASSWORD '*4680BADAC6AB3959526F032A7B3A60C1EC163F9F';
+
+GRANT ALL PRIVILEGES ON `webprojekt`.* TO `bif2webscriptinguser`@`localhost` WITH GRANT OPTION;
