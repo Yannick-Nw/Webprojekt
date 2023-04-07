@@ -82,6 +82,7 @@ class DataHandler {
         return $available_dates;
     }
 
+
     /*public function queryUsers() {
         $users = array();
 
@@ -101,7 +102,48 @@ class DataHandler {
         return $users;
     }*/
 
-    // Restliche Methoden ...
-}
+    // weitere Methoden ?
 
-?>
+    public function insertAppointment($appointment) {
+        $title = $appointment->getTitle();
+        $location = $appointment->getLocation();
+        $start_date = $appointment->getStartDate();
+        $end_date = $appointment->getEndDate();
+        $voting_end_date = $appointment->getVotingEndDate();
+
+        $query = "INSERT INTO appointments (title, location, start_date, end_date, voting_end_date) VALUES ('$title', '$location', '$start_date', '$end_date', '$voting_end_date')";
+
+        if ($this->conn->query($query) === TRUE) {
+            $last_id = $this->conn->insert_id;
+            return $last_id;
+        } else {
+            die("Error: " . $query . "<br>" . $this->conn->error);
+        }
+    }
+
+    public function insertAppointmentUser($appointment_id, $user_id, $selected_date, $comment) {
+        $query = "INSERT INTO appointments_users (appointment_id, user_id, selected_date, comment) VALUES (?, ?, ?, ?)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("iiss", $appointment_id, $user_id, $selected_date, $comment);
+        $stmt->execute();
+    
+        if ($stmt->affected_rows > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public function insertAvailableDate($appointment_id, $date) {
+        $query = "INSERT INTO available_dates (appointment_id, date) VALUES (?, ?)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("is", $appointment_id, $date);
+        $stmt->execute();
+    
+        if ($stmt->affected_rows > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
