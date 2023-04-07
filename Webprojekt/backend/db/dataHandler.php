@@ -1,6 +1,6 @@
 <?php
 
-require_once ("../models/appointment.php");
+require_once ("../backend/models/appointment.php");
 //require_once ("user.php");
 require_once ("config.php");
 
@@ -14,6 +14,8 @@ class DataHandler {
     
         if ($this->conn->connect_error) {
             die("Connection failed: " . $this->conn->connect_error);
+        } else {
+            //echo "Connected successfully";
         }
     }
     
