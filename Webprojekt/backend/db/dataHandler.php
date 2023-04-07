@@ -8,14 +8,15 @@ class DataHandler {
     private $conn;
 
     public function __construct() {
-        global $config;
-
-        $this->conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
-
+        global $host, $username, $password, $dbname;
+    
+        $this->conn = new mysqli($host, $username, $password, $dbname);
+    
         if ($this->conn->connect_error) {
             die("Connection failed: " . $this->conn->connect_error);
         }
     }
+    
 
     public function queryAppointments() {
         $appointments = array();
