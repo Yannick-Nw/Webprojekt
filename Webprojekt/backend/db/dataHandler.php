@@ -1,6 +1,6 @@
 <?php
 
-require_once ("models/appointment.php");
+require_once ("../models/appointment.php");
 //require_once ("user.php");
 require_once ("config.php");
 
