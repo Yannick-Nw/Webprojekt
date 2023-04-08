@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 07. Apr 2023 um 18:15
+-- Erstellungszeit: 08. Apr 2023 um 17:49
 -- Server-Version: 10.4.27-MariaDB
 -- PHP-Version: 8.2.0
 
@@ -31,45 +31,32 @@ CREATE TABLE `appointments` (
   `id` int(11) NOT NULL,
   `title` varchar(255) DEFAULT NULL,
   `location` varchar(255) DEFAULT NULL,
-  `start_date` datetime DEFAULT NULL,
-  `end_date` datetime DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `date_id` int(11) DEFAULT NULL,
+  `duration` int(11) DEFAULT NULL,
   `voting_end_date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `appointments_users`
+-- Tabellenstruktur für Tabelle `dates`
 --
 
-CREATE TABLE `appointments_users` (
+CREATE TABLE `dates` (
   `id` int(11) NOT NULL,
-  `appointment_id` int(11) DEFAULT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `selected_date` date DEFAULT NULL,
-  `comment` varchar(255) DEFAULT NULL
+  `date` date DEFAULT NULL,
+  `time` time DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `available_dates`
+-- Tabellenstruktur für Tabelle `participants`
 --
 
-CREATE TABLE `available_dates` (
-  `id` int(11) NOT NULL,
+CREATE TABLE `participants` (
   `appointment_id` int(11) DEFAULT NULL,
-  `date` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `users`
---
-
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
   `username` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -81,28 +68,20 @@ CREATE TABLE `users` (
 -- Indizes für die Tabelle `appointments`
 --
 ALTER TABLE `appointments`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `date_id` (`date_id`);
+
+--
+-- Indizes für die Tabelle `dates`
+--
+ALTER TABLE `dates`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indizes für die Tabelle `appointments_users`
+-- Indizes für die Tabelle `participants`
 --
-ALTER TABLE `appointments_users`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `appointment_id` (`appointment_id`),
-  ADD KEY `user_id` (`user_id`);
-
---
--- Indizes für die Tabelle `available_dates`
---
-ALTER TABLE `available_dates`
-  ADD PRIMARY KEY (`id`),
+ALTER TABLE `participants`
   ADD KEY `appointment_id` (`appointment_id`);
-
---
--- Indizes für die Tabelle `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT für exportierte Tabellen
@@ -115,21 +94,9 @@ ALTER TABLE `appointments`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT für Tabelle `appointments_users`
+-- AUTO_INCREMENT für Tabelle `dates`
 --
-ALTER TABLE `appointments_users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT für Tabelle `available_dates`
---
-ALTER TABLE `available_dates`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT für Tabelle `users`
---
-ALTER TABLE `users`
+ALTER TABLE `dates`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -137,22 +104,18 @@ ALTER TABLE `users`
 --
 
 --
--- Constraints der Tabelle `appointments_users`
+-- Constraints der Tabelle `appointments`
 --
-ALTER TABLE `appointments_users`
-  ADD CONSTRAINT `appointments_users_ibfk_1` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`id`),
-  ADD CONSTRAINT `appointments_users_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+ALTER TABLE `appointments`
+  ADD CONSTRAINT `appointments_ibfk_1` FOREIGN KEY (`date_id`) REFERENCES `dates` (`id`);
 
 --
--- Constraints der Tabelle `available_dates`
+-- Constraints der Tabelle `participants`
 --
-ALTER TABLE `available_dates`
-  ADD CONSTRAINT `available_dates_ibfk_1` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`id`);
+ALTER TABLE `participants`
+  ADD CONSTRAINT `participants_ibfk_1` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-GRANT USAGE ON *.* TO `bif2webscriptinguser`@`localhost` IDENTIFIED BY PASSWORD '*4680BADAC6AB3959526F032A7B3A60C1EC163F9F';
-
-GRANT ALL PRIVILEGES ON `webprojekt`.* TO `bif2webscriptinguser`@`localhost` WITH GRANT OPTION;
