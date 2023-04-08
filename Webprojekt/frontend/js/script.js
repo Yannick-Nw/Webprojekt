@@ -30,8 +30,8 @@ function loaddata(requestTyp) {
                 var location = appointmentObjekt.location;
                 var start_time = appointmentObjekt.start_time;
                 var end_time = appointmentObjekt.end_time;
-                
-                var tbody = $('#tableRows');    // Zugriff auf das tbody-Element
+                console.log(appointmentObjekt);
+                var tbodyMain = $('#tableRows');    // Zugriff auf das tbody-Element
                 
                 var tr = $('<tr></tr>').attr('id',id).addClass('h-12 hover:bg-amber-950/50');   // Erstellen einer neuen Zeile
                 
@@ -50,13 +50,14 @@ function loaddata(requestTyp) {
                 var td5 = $('<td></td>').text('Mein Status');
                 tr.append(td5);
                 
-                tbody.append(tr);   // Hinzufügen der Zeile zur Tabelle
+                tbodyMain.append(tr);   // Hinzufügen der Zeile zur Tabelle
                 
             }
             
             $("#tableRows").children().click(function () {
                 $("#allAppointments").hide();
-                //appointmentChoice(this);
+                //appointmentChoice($(this).attr('id'));
+                console.log($(this).attr('id'))
                 $("#appointmentDetails").show();
             });
             
@@ -71,45 +72,37 @@ function loaddata(requestTyp) {
 function appointmentChoice(choice){
     $.ajax({
         url: "../backend/serviceHandler.php",
-        data: {param: requestTyp},
+        data: {param: 'details', id: choice},
         dataType: "json",
         success: function (response) {
             for (var i = 0; i < response.length; i++) {
                 var appointmentObjekt = response[i];
                 var id = appointmentObjekt.id;
-                var appointment_id = appointmentObjekt.appointment_id;
-                var user_id = appointmentObjekt.user_id;
-                var selected_date = appointmentObjekt.selected_date;
-                var comment = appointmentObjekt.comment;
+                var date = appointmentObjekt.appointment_dates;
+                var time = appointmentObjekt.appointment_times;
+                var participent = appointmentObjekt.participents;
+                var selected = appointmentObjekt.selected_dates;
                 
-                var tr = $('#appointmentDates');    // Zugriff auf das tbody-Element
+                var trDate = $('#appointmentDates');    // Zugriff auf das Zeile-Element
                 
-                var tr = $('<tr></tr>').attr('id',id).addClass('h-12 hover:bg-amber-950/50');   // Erstellen einer neuen Zeile
+                var td1 = $('<td></td>').text(date); // Erstellen und Hinzufügen von Zellen zur Zeile
+                trDate.append(td1);
+                
+                var trDate = $('#appointmentTimes');    // Zugriff auf das Zeile-Element
+                
+                var td1 = $('<td></td>').text(time); // Erstellen und Hinzufügen von Zellen zur Zeile
+                trDate.append(td1);
+                
+                var tbodyDetails = $('#particpantsPicks');
+
+                var tr = $('<tr></tr>').addClass('h-12');   // Erstellen einer neuen Zeile
                 
                 var td1 = $('<td></td>').text(title); // Erstellen und Hinzufügen von Zellen zur Zeile
                 tr.append(td1);
-                
-                var td2 = $('<td></td>').text('Meine Personen');
-                tr.append(td2);
-                
-                var td3 = $('<td></td>').text(start_time);
-                tr.append(td3);
-                
-                var td4 = $('<td></td>').text(end_time);
-                tr.append(td4);
-                
-                var td5 = $('<td></td>').text('Mein Status');
-                tr.append(td5);
-                
-                tr.append(tr);   // Hinzufügen der Zeile zur Tabelle
-                
+
+                tbodyMain.append(tr);
+
             }
-            
-            $("#tableRows").children().click(function () {
-                $("#allAppointments").hide();
-                appointmentChoice(this);
-                $("#appointmentDetails").show();
-            });
             
         },
         error: function() {
