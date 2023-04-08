@@ -20,69 +20,78 @@ class DataHandler {
     }
     
 
-    public function queryAppointments() {
-        $appointments = array();
-
-        $query = "SELECT * FROM appointments";
+    public function queryDates($appointment_id) {
+        $dates = array();
+    
+        $query = "SELECT id, date, time FROM dates WHERE appointment_id = " . $appointment_id;
         $result = mysqli_query($this->conn, $query);
-
+    
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
-                $appointment = new Appointment(
-                    $row["id"],
-                    $row["title"],
-                    $row["location"],
-                    $row["start_date"],
-                    $row["end_date"],
-                    $row["voting_end_date"]
+                $date = array(
+                    "id" => $row["id"],
+                    "date" => $row["date"],
+                    "time" => $row["time"]
                 );
-                array_push($appointments, $appointment);
+                array_push($dates, $date);
             }
         }
+    
+        return $dates;
+    }    
 
-        return $appointments;
+    public function insertDate($appointment_id, $date, $time) {
+        $query = "INSERT INTO dates (appointment_id, date, time) VALUES ($appointment_id, '$date', '$time')";
+        $result = mysqli_query($this->conn, $query);
+        return $result;
     }
 
-    public function queryAppointmentUsers($appointment_id) {
-        $appointment_users = array();
-
-        $query = "SELECT * FROM appointments_users WHERE appointment_id = " . $appointment_id;
+    public function deleteDate($date_id) {
+        $query = "DELETE FROM dates WHERE id = $date_id";
         $result = mysqli_query($this->conn, $query);
-
-        if (mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_assoc($result)) {
-                $appointment_user = array(
-                    "id" => $row["id"],
-                    "appointment_id" => $row["appointment_id"],
-                    "user_id" => $row["user_id"],
-                    "selected_date" => $row["selected_date"],
-                    "comment" => $row["comment"]
-                );
-                array_push($appointment_users, $appointment_user);
-            }
-        }
-
-        return $appointment_users;
+        return $result;
     }
 
-    public function queryAvailableDates($appointment_id) {
-        $available_dates = array();
-
-        $query = "SELECT * FROM available_dates WHERE appointment_id = " . $appointment_id;
+    public function queryAppointmentParticipants($appointment_id) {
+        $participants = array();
+    
+        $query = "SELECT id, appointment_id, username FROM participants WHERE appointment_id = " . $appointment_id;
         $result = mysqli_query($this->conn, $query);
-
+    
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
-                $available_date = array(
+                $participant = array(
                     "id" => $row["id"],
                     "appointment_id" => $row["appointment_id"],
-                    "date" => $row["date"]
+                    "username" => $row["username"]
                 );
-                array_push($available_dates, $available_date);
+                array_push($participants, $participant);
             }
         }
+    
+        return $participants;
+    }    
 
-        return $available_dates;
+    public function insertParticipant($appointment_id, $username) {
+        $query = "INSERT INTO participants (appointment_id, username) VALUES ($appointment_id, '$username')";
+        $result = mysqli_query($this->conn, $query);
+        return $result;
+    }
+
+    public function updateParticipant($participant_id, $selected_date, $comment) {
+        $query = "UPDATE participants SET selected_date='$selected_date', comment='$comment' WHERE id = $participant_id";
+        $result = mysqli_query($this->conn, $query);
+        return $result;
+    }
+
+    public function deleteParticipant($participant_id) {
+        $query = "DELETE FROM participants WHERE id = $participant_id";
+        $result = mysqli_query($this->conn, $query);
+        return $result;
+    }
+
+    function __destruct() {
+        mysqli_close($this->conn);
     }
 
 
@@ -106,47 +115,4 @@ class DataHandler {
     }*/
 
     // weitere Methoden ?
-
-    public function insertAppointment($appointment) {
-        $title = $appointment->getTitle();
-        $location = $appointment->getLocation();
-        $start_date = $appointment->getStartDate();
-        $end_date = $appointment->getEndDate();
-        $voting_end_date = $appointment->getVotingEndDate();
-
-        $query = "INSERT INTO appointments (title, location, start_date, end_date, voting_end_date) VALUES ('$title', '$location', '$start_date', '$end_date', '$voting_end_date')";
-
-        if ($this->conn->query($query) === TRUE) {
-            $last_id = $this->conn->insert_id;
-            return $last_id;
-        } else {
-            die("Error: " . $query . "<br>" . $this->conn->error);
-        }
-    }
-
-    public function insertAppointmentUser($appointment_id, $user_id, $selected_date, $comment) {
-        $query = "INSERT INTO appointments_users (appointment_id, user_id, selected_date, comment) VALUES (?, ?, ?, ?)";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("iiss", $appointment_id, $user_id, $selected_date, $comment);
-        $stmt->execute();
-    
-        if ($stmt->affected_rows > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
-    public function insertAvailableDate($appointment_id, $date) {
-        $query = "INSERT INTO available_dates (appointment_id, date) VALUES (?, ?)";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("is", $appointment_id, $date);
-        $stmt->execute();
-    
-        if ($stmt->affected_rows > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }
