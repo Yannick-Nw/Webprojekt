@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 08. Apr 2023 um 17:49
+-- Erstellungszeit: 08. Apr 2023 um 20:28
 -- Server-Version: 10.4.27-MariaDB
 -- PHP-Version: 8.2.0
 
@@ -60,6 +60,19 @@ CREATE TABLE `participants` (
   `username` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `votes`
+--
+
+CREATE TABLE `votes` (
+  `id` int(11) NOT NULL,
+  `appointment_id` int(11) NOT NULL,
+  `date_id` int(11) NOT NULL,
+  `username` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Indizes der exportierten Tabellen
 --
@@ -84,6 +97,14 @@ ALTER TABLE `participants`
   ADD KEY `appointment_id` (`appointment_id`);
 
 --
+-- Indizes für die Tabelle `votes`
+--
+ALTER TABLE `votes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `appointment_id` (`appointment_id`),
+  ADD KEY `date_id` (`date_id`);
+
+--
 -- AUTO_INCREMENT für exportierte Tabellen
 --
 
@@ -97,6 +118,12 @@ ALTER TABLE `appointments`
 -- AUTO_INCREMENT für Tabelle `dates`
 --
 ALTER TABLE `dates`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `votes`
+--
+ALTER TABLE `votes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -114,6 +141,13 @@ ALTER TABLE `appointments`
 --
 ALTER TABLE `participants`
   ADD CONSTRAINT `participants_ibfk_1` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`id`);
+
+--
+-- Constraints der Tabelle `votes`
+--
+ALTER TABLE `votes`
+  ADD CONSTRAINT `votes_ibfk_1` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `votes_ibfk_2` FOREIGN KEY (`date_id`) REFERENCES `dates` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
