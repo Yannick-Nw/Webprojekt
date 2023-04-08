@@ -56,7 +56,7 @@ function loaddata(requestTyp) {
             
             $("#tableRows").children().click(function () {
                 $("#allAppointments").hide();
-                appointmentChoice(this);
+                //appointmentChoice(this);
                 $("#appointmentDetails").show();
             });
             
