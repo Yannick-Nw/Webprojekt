@@ -94,60 +94,47 @@ class DataHandler {
         mysqli_close($this->conn);
     }
 
-    public function queryVotes($appointment_id, $date_id) {
+    public function queryVotes($appointment_id) {
         $votes = array();
-        
-        $query = "SELECT * FROM votes WHERE appointment_id = " . $appointment_id . " AND date_id = " . $date_id;
+        $query = "SELECT * FROM votes WHERE appointment_id = " . $appointment_id;
         $result = mysqli_query($this->conn, $query);
-        
+    
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $vote = array(
                     "id" => $row["id"],
                     "appointment_id" => $row["appointment_id"],
                     "date_id" => $row["date_id"],
-                    "username" => $row["username"],
-                    "comment" => $row["comment"]
+                    "voter_name" => $row["voter_name"]
                 );
                 array_push($votes, $vote);
             }
         }
-        
+    
         return $votes;
     }
+    
 
-    public function insertVote($appointment_id, $date_id, $username, $comment = null) {
-        $query = "INSERT INTO votes (appointment_id, date_id, username, comment) VALUES (" . $appointment_id . ", " . $date_id . ", '" . $username . "', '" . $comment . "')";
+    public function insertVote($appointment_id, $date_id, $voter_name) {
+        $query = "INSERT INTO votes (appointment_id, date_id, voter_name) VALUES ('$appointment_id', '$date_id', '$voter_name')";
         $result = mysqli_query($this->conn, $query);
-        
-        if ($result) {
-            return true;
-        } else {
-            return false;
-        }
+        return $result;
     }
+    
 
-    public function updateVote($appointment_id, $date_id, $username, $comment = null) {
-        $query = "UPDATE votes SET comment = '" . $comment . "' WHERE appointment_id = " . $appointment_id . " AND date_id = " . $date_id . " AND username = '" . $username . "'";
+    public function updateVote($appointment_id, $date_id, $voter_name) {
+        $query = "UPDATE votes SET voter_name='$voter_name' WHERE appointment_id='$appointment_id' AND date_id='$date_id'";
         $result = mysqli_query($this->conn, $query);
-        
-        if ($result) {
-            return true;
-        } else {
-            return false;
-        }
+        return $result;
     }
+    
 
-    public function deleteVote($appointment_id, $date_id, $username) {
-        $query = "DELETE FROM votes WHERE appointment_id = " . $appointment_id . " AND date_id = " . $date_id . " AND username = '" . $username . "'";
+    public function deleteVote($appointment_id, $date_id, $voter_name) {
+        $query = "DELETE FROM votes WHERE appointment_id='$appointment_id' AND date_id='$date_id' AND voter_name='$voter_name'";
         $result = mysqli_query($this->conn, $query);
-        
-        if ($result) {
-            return true;
-        } else {
-            return false;
-        }
+        return $result;
     }
+    
 
 
     /*public function queryUsers() {
