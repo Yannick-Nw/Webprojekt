@@ -19,15 +19,16 @@ class DataHandler {
         }
     }
     
-    public function queryAppointments() {
+    public function queryAppointments($appointment_id) {
         $appointments = array();
-
+    
         $query = "SELECT appointments.*, dates.date, dates.time FROM appointments
                   INNER JOIN dates ON appointments.date_id = dates.id
+                  WHERE appointments.id = '$appointment_id'
                   ORDER BY dates.date, dates.time";
-
+    
         $result = mysqli_query($this->conn, $query);
-
+    
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $appointment = array(
@@ -43,21 +44,25 @@ class DataHandler {
                 array_push($appointments, $appointment);
             }
         }
-
+    
         return $appointments;
     }
+    
+    
 
     public function updateAppointment($id, $title, $location, $description, $date_id, $duration, $voting_end_date) {
-        $query = "UPDATE appointments SET title = '$title', location = '$location', description = '$description', date_id = '$date_id', duration = '$duration', voting_end_date = '$voting_end_date' WHERE id = '$id'";
+        $query = "UPDATE appointments SET title='$title', location='$location', description='$description', date_id='$date_id', duration='$duration', voting_end_date='$voting_end_date' WHERE id='$id'";
         return mysqli_query($this->conn, $query);
     }
+    
     
     public function deleteAppointment($id) {
-        $query = "DELETE FROM appointments WHERE id = '$id'";
+        $query = "DELETE FROM appointments WHERE id='$id'";
         return mysqli_query($this->conn, $query);
     }
     
     
+
     public function queryDates($appointment_id) {
         $dates = array();
     
