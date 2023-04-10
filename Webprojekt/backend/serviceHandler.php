@@ -11,9 +11,9 @@ if (!empty($_GET['param'])) {
         if (!empty($_GET['id'])) {
             $appointmentID = $_GET['id'];
             $users = $result->queryAppointmentUsers($appointmentID);
-            echo json_encode($users);
             $details = $result->queryAvailableDates($appointmentID);
-            echo json_encode($details);
+            $merged_array = array_merge($users, $details);
+            echo json_encode($merged_array);
         }
     }
 }
