@@ -107,12 +107,14 @@ function appointmentChoice(choice) {
                 var trParticpants = $('<tr></tr>').addClass('h-12');    // Erstellen einer neuen Zeile
                 if (selected === '1') {
                     var tdParticpants = $('<td></td>').text('&#x2705;'); // Erstellen und Hinzufügen von Zellen zur Zeile                    
+                    trParticpants.append(tdParticpants);
+                    tbodyDetails.append(trParticpants);
                 } else {
                     var tdParticpants = $('<td></td>').text('&#x274C;'); // Erstellen und Hinzufügen von Zellen zur Zeile
+                    trParticpants.append(tdParticpants);
+                    tbodyDetails.append(trParticpants);
                 }
-                trParticpants.append(tdParticpants);
 
-                tbodyDetails.append(trParticpants);
 
             }
 

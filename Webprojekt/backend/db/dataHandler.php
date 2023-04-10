@@ -19,13 +19,10 @@ class DataHandler {
         }
     }
     
-    public function queryAppointments($appointment_id) {
+    public function queryAppointments() {
         $appointments = array();
     
-        $query = "SELECT appointments.*, dates.date, dates.time FROM appointments
-                  INNER JOIN dates ON appointments.date_id = dates.id
-                  WHERE appointments.id = '$appointment_id'
-                  ORDER BY dates.date, dates.time";
+        $query = "SELECT * FROM appointments";
     
         $result = mysqli_query($this->conn, $query);
     

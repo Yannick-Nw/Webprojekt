@@ -10,9 +10,9 @@ if (!empty($_GET['param'])) {
     } elseif ($requestTyp == 'details') {
         if (!empty($_GET['id'])) {
             $appointmentID = $_GET['id'];
-            $users = $result->queryAppointmentUsers($appointmentID);
-            $details = $result->queryAvailableDates($appointmentID);
-            $merged_array = array_merge($users, $details);
+            $details = $result->queryDates($appointmentID);
+            $participants = $result->queryAppointmentParticipants($appointmentID);
+            $merged_array = array_merge($details, $participants);
             echo json_encode($merged_array);
         }
     }
