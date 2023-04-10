@@ -9,7 +9,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script src="js/script.js"></script>
     <link rel="stylesheet" href="styles.css">
-    <title>Planer</title>
+    <title>Appointment Finder</title>
 </head>
 
 <body class="bg-amber-950">
@@ -56,7 +56,7 @@
                     <thead class="text-2xl divide-y divide-amber-950">
                         <tr id="appointmentDates" class="divide-x divide-amber-950">
                             <th>Datum</th>
-                            <td colspan="2">9.April</td>
+                            <td colspan="3">9.April</td>
                             <td>10.April</td>
                         </tr>
                         <tr id="appointmentTimes" class="divide-x divide-amber-950">
@@ -64,32 +64,23 @@
                             <td>12:00-14:00</td>
                             <td>14:00-16:00</td>
                             <td>-</td>
+                            <td>-</td>
                         </tr>
                     </thead>
                     <tbody id="particpantsPicks" class="text-xl">
                         <tr id="tableRow1">
                             <td>Yannick</td>
-                            <td>
-                                <input type="checkbox" class="form-checkbox " checked disabled>
-                            </td>
-                            <td>
-                                <input type="checkbox" class="form-checkbox" checked>
-                            </td>
-                            <td>
-                                <input type="checkbox" class="form-checkbox" checked>
-                            </td>
+                            <td>&#x2611;</td>
+                            <td>&#x2705;</td>
+                            <td>&#x2713;</td>
+                            <td>&#x2714;</td>
                         </tr>
                         <tr id="tableRow2">
                             <td>Ron</td>
-                            <td>
-                                <input type="checkbox" class="form-checkbox" unchecked>
-                            </td>
-                            <td>
-                                <input type="checkbox" class="form-checkbox" unchecked>
-                            </td>
-                            <td>
-                                <input type="checkbox" class="form-checkbox" checked>
-                            </td>
+                            <td>&cross;</td>
+                            <td>&check;</td>
+                            <td>&#x274C;</td>
+                            <td>&#x2714;</td>
                         </tr>
                     </tbody>
                 </table>
