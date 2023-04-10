@@ -12,3 +12,12 @@ if (!$conn) {
 }
 
 ?>
+
+
+
+
+createAppointment
+selectAppointment
+voteOnDate
+addParticipant
+getAppointmentResults
