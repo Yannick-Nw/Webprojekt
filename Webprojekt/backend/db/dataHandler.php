@@ -33,8 +33,6 @@ class DataHandler {
                     "title" => $row["title"],
                     "location" => $row["location"],
                     "description" => $row["description"],
-                    "date" => $row["date"],
-                    "time" => $row["time"],
                     "duration" => $row["duration"],
                     "voting_end_date" => $row["voting_end_date"]
                 );
@@ -45,10 +43,8 @@ class DataHandler {
         return $appointments;
     }
     
-    
-
-    public function updateAppointment($id, $title, $location, $description, $date_id, $duration, $voting_end_date) {
-        $query = "UPDATE appointments SET title='$title', location='$location', description='$description', date_id='$date_id', duration='$duration', voting_end_date='$voting_end_date' WHERE id='$id'";
+    public function updateAppointment($id, $title, $location, $description, $duration, $voting_end_date) {
+        $query = "UPDATE appointments SET title='$title', location='$location', description='$description', duration='$duration', voting_end_date='$voting_end_date' WHERE id='$id'";
         return mysqli_query($this->conn, $query);
     }
     
@@ -57,19 +53,86 @@ class DataHandler {
         $query = "DELETE FROM appointments WHERE id='$id'";
         return mysqli_query($this->conn, $query);
     }
+
+    public function queryAppointmentParticipants($appointment_id) {
+        $participants = array();
     
+        $query = "SELECT * FROM appointment_participants WHERE appointment_id=$appointment_id";
     
+        $result = mysqli_query($this->conn, $query);
+    
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $participant = array(
+                    "id" => $row["id"],
+                    "appointment_id" => $row["appointment_id"],
+                    "date_id" => $row["date_id"],
+                    "participant_id" => $row["participant_id"],
+                    "vote" => $row["vote"]
+                );
+                array_push($participants, $participant);
+            }
+        }
+    
+        return $participants;
+    }
+    
+    public function insertAppointmentParticipant($appointment_id, $participant_id, $vote) {
+        $query = "INSERT INTO appointment_participants (appointment_id, participant_id, vote) VALUES ('" . $appointment_id . "', '" . $participant_id . "', '" . $vote . "')";
+
+        $result = mysqli_query($this->conn, $query);
+
+        if ($result) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function queryComments($appointment_id) {
+        $comments = array();
+    
+        $query = "SELECT * FROM comments WHERE appointment_id = " . $appointment_id;
+    
+        $result = mysqli_query($this->conn, $query);
+    
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $comment = array(
+                    "id" => $row["id"],
+                    "appointment_id" => $row["appointment_id"],
+                    "participant_id" => $row["participant_id"],
+                    "comments" => $row["comments"]
+                );
+                array_push($comments, $comment);
+            }
+        }
+    
+        return $comments;
+    }
+
+    public function insertComment($appointmentId, $participantId, $comment) {
+        $query = "INSERT INTO comments (appointment_id, participant_id, comments) VALUES ('$appointmentId', '$participantId', '$comment')";
+        $result = mysqli_query($this->conn, $query);
+    
+        if (!$result) {
+            die("Error inserting comment: " . mysqli_error($this->conn));
+        }
+        
+        return mysqli_insert_id($this->conn);
+    }
 
     public function queryDates($appointment_id) {
         $dates = array();
     
-        $query = "SELECT id, date, time FROM dates WHERE appointment_id = " . $appointment_id;
+        $query = "SELECT * FROM dates WHERE appointment_id = " . $appointment_id;
         $result = mysqli_query($this->conn, $query);
     
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $date = array(
                     "id" => $row["id"],
+                    "appointment_id" => $row["appointment_id"],
                     "date" => $row["date"],
                     "time" => $row["time"]
                 );
@@ -86,17 +149,23 @@ class DataHandler {
         return $result;
     }
 
+    public function updateDate($date_id, $appointment_id, $date, $time) {
+        $query = "UPDATE dates SET appointment_id = $appointment_id, date = '$date', time = '$time' WHERE id = $date_id";
+        $result = mysqli_query($this->conn, $query);
+        return $result;
+    }
+
     public function deleteDate($date_id) {
         $query = "DELETE FROM dates WHERE id = $date_id";
         $result = mysqli_query($this->conn, $query);
         return $result;
     }
-
-
-    public function queryAppointmentParticipants($appointment_id) {
+   
+    public function queryParticipants($appointment_id) {
         $participants = array();
     
-        $query = "SELECT id, appointment_id, username FROM participants WHERE appointment_id = " . $appointment_id;
+        $query = "SELECT id, appointment_id, username, vote_response, participant_comment FROM participants WHERE appointment_id = $appointment_id";
+    
         $result = mysqli_query($this->conn, $query);
     
         if (mysqli_num_rows($result) > 0) {
@@ -104,27 +173,29 @@ class DataHandler {
                 $participant = array(
                     "id" => $row["id"],
                     "appointment_id" => $row["appointment_id"],
-                    "username" => $row["username"]
+                    "username" => $row["username"],
+                    "vote_response" => $row["vote_response"],
+                    "participant_comment" => $row["participant_comment"]
                 );
                 array_push($participants, $participant);
             }
         }
     
         return $participants;
-    }    
-
+    }
+    
     public function insertParticipant($appointment_id, $username) {
-        $query = "INSERT INTO participants (appointment_id, username) VALUES ($appointment_id, '$username')";
+        $query = "INSERT INTO participants (appointment_id, username, vote_response, participant_comment) VALUES ($appointment_id, '$username', NULL, NULL)";
         $result = mysqli_query($this->conn, $query);
         return $result;
     }
-
-    public function updateParticipant($participant_id, $selected_date, $comment) {
-        $query = "UPDATE participants SET selected_date='$selected_date', comment='$comment' WHERE id = $participant_id";
+    
+    public function updateParticipant($participant_id, $selected_date, $comment, $vote_response) {
+        $query = "UPDATE participants SET selected_date='$selected_date', participant_comment='$comment', vote_response='$vote_response' WHERE id = $participant_id";
         $result = mysqli_query($this->conn, $query);
         return $result;
     }
-
+    
     public function deleteParticipant($participant_id) {
         $query = "DELETE FROM participants WHERE id = $participant_id";
         $result = mysqli_query($this->conn, $query);
@@ -134,66 +205,4 @@ class DataHandler {
     function __destruct() {
         mysqli_close($this->conn);
     }
-
-
-    public function queryVotes($appointment_id) {
-        $votes = array();
-        $query = "SELECT * FROM votes WHERE appointment_id = " . $appointment_id;
-        $result = mysqli_query($this->conn, $query);
-    
-        if (mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_assoc($result)) {
-                $vote = array(
-                    "id" => $row["id"],
-                    "appointment_id" => $row["appointment_id"],
-                    "date_id" => $row["date_id"],
-                    "voter_name" => $row["voter_name"]
-                );
-                array_push($votes, $vote);
-            }
-        }
-    
-        return $votes;
-    }
-    
-    public function insertVote($appointment_id, $date_id, $voter_name) {
-        $query = "INSERT INTO votes (appointment_id, date_id, voter_name) VALUES ('$appointment_id', '$date_id', '$voter_name')";
-        $result = mysqli_query($this->conn, $query);
-        return $result;
-    }
-    
-    public function updateVote($appointment_id, $date_id, $voter_name) {
-        $query = "UPDATE votes SET voter_name='$voter_name' WHERE appointment_id='$appointment_id' AND date_id='$date_id'";
-        $result = mysqli_query($this->conn, $query);
-        return $result;
-    }
-    
-    public function deleteVote($appointment_id, $date_id, $voter_name) {
-        $query = "DELETE FROM votes WHERE appointment_id='$appointment_id' AND date_id='$date_id' AND voter_name='$voter_name'";
-        $result = mysqli_query($this->conn, $query);
-        return $result;
-    }
-    
-
-
-    /*public function queryUsers() {
-        $users = array();
-
-        $query = "SELECT * FROM users";
-        $result = mysqli_query($this->conn, $query);
-
-        if (mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_assoc($result)) {
-                $user = new user(
-                    $row["id"],
-                    $row["username"]
-                );
-                array_push($users, $user);
-            }
-        }
-
-        return $users;
-    }*/
-
-    // weitere Methoden ?
 }
