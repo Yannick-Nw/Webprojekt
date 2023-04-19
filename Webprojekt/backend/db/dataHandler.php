@@ -34,7 +34,8 @@ class DataHandler {
                     "location" => $row["location"],
                     "description" => $row["description"],
                     "duration" => $row["duration"],
-                    "voting_end_date" => $row["voting_end_date"]
+                    "voting_end_date" => $row["voting_end_date"],
+                    "actual_appointment" => $row["actual_appointment"]
                 );
                 array_push($appointments, $appointment);
             }
@@ -43,11 +44,10 @@ class DataHandler {
         return $appointments;
     }
     
-    public function updateAppointment($id, $title, $location, $description, $duration, $voting_end_date) {
-        $query = "UPDATE appointments SET title='$title', location='$location', description='$description', duration='$duration', voting_end_date='$voting_end_date' WHERE id='$id'";
+    public function updateAppointment($id, $title, $location, $description, $duration, $voting_end_date, $actual_appointment) {
+        $query = "UPDATE appointments SET title='$title', location='$location', description='$description', duration='$duration', voting_end_date='$voting_end_date' actual_appointment='$actual_appointment' WHERE id='$id'";
         return mysqli_query($this->conn, $query);
     }
-    
     
     public function deleteAppointment($id) {
         $query = "DELETE FROM appointments WHERE id='$id'";
