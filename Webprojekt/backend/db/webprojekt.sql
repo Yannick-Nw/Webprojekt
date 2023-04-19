@@ -2,9 +2,9 @@
 -- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:8889
--- Erstellungszeit: 10. Apr 2023 um 15:27
--- Server-Version: 5.7.39
+-- Host: 127.0.0.1
+-- Erstellungszeit: 19. Apr 2023 um 13:52
+-- Server-Version: 10.4.27-MariaDB
 -- PHP-Version: 8.2.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -31,10 +31,10 @@ CREATE TABLE `appointments` (
   `id` int(11) NOT NULL,
   `title` varchar(255) DEFAULT NULL,
   `location` varchar(255) DEFAULT NULL,
-  `description` text,
+  `description` text DEFAULT NULL,
   `duration` int(11) DEFAULT NULL,
   `voting_end_date` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -47,21 +47,8 @@ CREATE TABLE `appointment_participants` (
   `appointment_id` int(11) NOT NULL,
   `date_id` int(11) NOT NULL,
   `participant_id` int(11) NOT NULL,
-  `vote` int(3) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `comments`
---
-
-CREATE TABLE `comments` (
-  `id` int(11) NOT NULL,
-  `appointment_id` int(11) NOT NULL,
-  `participant_id` int(11) NOT NULL,
-  `comments` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `vote` int(3) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -74,7 +61,7 @@ CREATE TABLE `dates` (
   `appointment_id` int(11) DEFAULT NULL,
   `date` date DEFAULT NULL,
   `time` time DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -86,8 +73,9 @@ CREATE TABLE `participants` (
   `id` int(11) NOT NULL,
   `appointment_id` int(11) NOT NULL,
   `username` varchar(255) NOT NULL,
-  `participant_comment` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `vote_response` int(11) NOT NULL,
+  `comment` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Indizes der exportierten Tabellen
@@ -109,26 +97,16 @@ ALTER TABLE `appointment_participants`
   ADD KEY `participant_id` (`participant_id`);
 
 --
--- Indizes für die Tabelle `comments`
---
-ALTER TABLE `comments`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `appointment_id` (`appointment_id`),
-  ADD KEY `participant_id` (`participant_id`);
-
---
 -- Indizes für die Tabelle `dates`
 --
 ALTER TABLE `dates`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `appointment_id` (`appointment_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indizes für die Tabelle `participants`
 --
 ALTER TABLE `participants`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `appointment_id` (`appointment_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT für exportierte Tabellen
@@ -163,25 +141,6 @@ ALTER TABLE `appointment_participants`
   ADD CONSTRAINT `appointment_participants_ibfk_1` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`id`),
   ADD CONSTRAINT `appointment_participants_ibfk_2` FOREIGN KEY (`date_id`) REFERENCES `dates` (`id`),
   ADD CONSTRAINT `appointment_participants_ibfk_3` FOREIGN KEY (`participant_id`) REFERENCES `participants` (`id`);
-
---
--- Constraints der Tabelle `comments`
---
-ALTER TABLE `comments`
-  ADD CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`id`),
-  ADD CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`participant_id`) REFERENCES `participants` (`id`);
-
---
--- Constraints der Tabelle `dates`
---
-ALTER TABLE `dates`
-  ADD CONSTRAINT `dates_ibfk_1` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints der Tabelle `participants`
---
-ALTER TABLE `participants`
-  ADD CONSTRAINT `participants_ibfk_1` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

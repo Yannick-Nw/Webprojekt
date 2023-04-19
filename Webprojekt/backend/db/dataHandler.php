@@ -89,39 +89,6 @@ class DataHandler {
         }
     }
 
-    public function queryComments($appointment_id) {
-        $comments = array();
-    
-        $query = "SELECT * FROM comments WHERE appointment_id = " . $appointment_id;
-    
-        $result = mysqli_query($this->conn, $query);
-    
-        if (mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_assoc($result)) {
-                $comment = array(
-                    "id" => $row["id"],
-                    "appointment_id" => $row["appointment_id"],
-                    "participant_id" => $row["participant_id"],
-                    "comments" => $row["comments"]
-                );
-                array_push($comments, $comment);
-            }
-        }
-    
-        return $comments;
-    }
-
-    public function insertComment($appointmentId, $participantId, $comment) {
-        $query = "INSERT INTO comments (appointment_id, participant_id, comments) VALUES ('$appointmentId', '$participantId', '$comment')";
-        $result = mysqli_query($this->conn, $query);
-    
-        if (!$result) {
-            die("Error inserting comment: " . mysqli_error($this->conn));
-        }
-        
-        return mysqli_insert_id($this->conn);
-    }
-
     public function queryDates($appointment_id) {
         $dates = array();
     
@@ -164,7 +131,7 @@ class DataHandler {
     public function queryParticipants($appointment_id) {
         $participants = array();
     
-        $query = "SELECT id, appointment_id, username, vote_response, participant_comment FROM participants WHERE appointment_id = $appointment_id";
+        $query = "SELECT id, appointment_id, username, vote_response, comment FROM participants WHERE appointment_id = $appointment_id";
     
         $result = mysqli_query($this->conn, $query);
     
@@ -175,7 +142,7 @@ class DataHandler {
                     "appointment_id" => $row["appointment_id"],
                     "username" => $row["username"],
                     "vote_response" => $row["vote_response"],
-                    "participant_comment" => $row["participant_comment"]
+                    "comment" => $row["comment"]
                 );
                 array_push($participants, $participant);
             }
@@ -185,13 +152,13 @@ class DataHandler {
     }
     
     public function insertParticipant($appointment_id, $username) {
-        $query = "INSERT INTO participants (appointment_id, username, vote_response, participant_comment) VALUES ($appointment_id, '$username', NULL, NULL)";
+        $query = "INSERT INTO participants (appointment_id, username, vote_response, comment) VALUES ($appointment_id, '$username', NULL, NULL)";
         $result = mysqli_query($this->conn, $query);
         return $result;
     }
     
     public function updateParticipant($participant_id, $selected_date, $comment, $vote_response) {
-        $query = "UPDATE participants SET selected_date='$selected_date', participant_comment='$comment', vote_response='$vote_response' WHERE id = $participant_id";
+        $query = "UPDATE participants SET selected_date='$selected_date', comment='$comment', vote_response='$vote_response' WHERE id = $participant_id";
         $result = mysqli_query($this->conn, $query);
         return $result;
     }
