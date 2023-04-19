@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 19. Apr 2023 um 13:52
+-- Erstellungszeit: 19. Apr 2023 um 14:14
 -- Server-Version: 10.4.27-MariaDB
 -- PHP-Version: 8.2.0
 
@@ -33,7 +33,8 @@ CREATE TABLE `appointments` (
   `location` varchar(255) DEFAULT NULL,
   `description` text DEFAULT NULL,
   `duration` int(11) DEFAULT NULL,
-  `voting_end_date` datetime DEFAULT NULL
+  `voting_end_date` datetime DEFAULT NULL,
+  `actual_appointment` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
