@@ -3,6 +3,7 @@ require_once("db/dataHandler.php");
 $result = new DataHandler();
 if (!empty($_GET['param'])) {
     $requestTyp = $_GET['param'];
+    header("Content-Type: application/json");
     if ($requestTyp == 'main') {
         $appointments = $result->queryAppointments(["id", "title", "location", "duration", "voting_end_date", "actual_appointment"]);
         //$participants = $result->queryParticipants();
@@ -16,8 +17,6 @@ if (!empty($_GET['param'])) {
             $vote = $result->queryAppointmentParticipants($appointmentID);
             $participants = $result->queryParticipants($appointmentID);
             $merged_array = array_merge($appointments, $details, $participants, $vote);
-            //print_r($merged_array);
-            header("Content-Type: application/json");
             echo json_encode($merged_array);
         }
     }
