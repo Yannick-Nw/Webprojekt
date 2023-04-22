@@ -45,7 +45,7 @@ class DataHandler {
     }
     
     public function updateAppointment($id, $title, $location, $description, $duration, $voting_end_date, $actual_appointment) {
-        $query = "UPDATE appointments SET title='$title', location='$location', description='$description', duration='$duration', voting_end_date='$voting_end_date' actual_appointment='$actual_appointment' WHERE id='$id'";
+        $query = "UPDATE appointments SET title='$title', location='$location', description='$description', duration='$duration', voting_end_date='$voting_end_date', actual_appointment='$actual_appointment' WHERE id='$id'";
         return mysqli_query($this->conn, $query);
     }
     
