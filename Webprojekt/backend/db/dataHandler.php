@@ -172,7 +172,7 @@ public function deleteAppointment($id)
     public function insertAppointmentParticipant($appointment_id, $participant_id, $vote)
 {
     $stmt = $this->conn->prepare("INSERT INTO appointment_participants (appointment_id, participant_id, vote) VALUES (?, ?, ?)");
-    $stmt->bind_param("iis", $appointment_id, $participant_id, $vote);
+    $stmt->bind_param("iii", $appointment_id, $participant_id, $vote);
     $result = $stmt->execute();
     $stmt->close();
 
@@ -362,18 +362,18 @@ public function deleteDate($date_id)
 
     public function insertParticipant($appointment_id, $username)
 {
-    $query = "INSERT INTO participants (appointment_id, username, vote_response, comment) VALUES (?, ?, NULL, NULL)";
+    $query = "INSERT INTO participants (appointment_id, username, comment) VALUES (?, ?, NULL)";
     $stmt = mysqli_prepare($this->conn, $query);
     mysqli_stmt_bind_param($stmt, 'is', $appointment_id, $username);
     $result = mysqli_stmt_execute($stmt);
     return $result;
 }
 
-public function updateParticipant($participant_id, $selected_date, $comment, $vote_response)
+public function updateParticipant($participant_id, $selected_date, $comment)
 {
-    $query = "UPDATE participants SET selected_date=?, comment=?, vote_response=? WHERE id = ?";
+    $query = "UPDATE participants SET selected_date=?, comment=? WHERE id = ?";
     $stmt = mysqli_prepare($this->conn, $query);
-    mysqli_stmt_bind_param($stmt, 'sssi', $selected_date, $comment, $vote_response, $participant_id);
+    mysqli_stmt_bind_param($stmt, 'ssi', $selected_date, $comment, $participant_id);
     $result = mysqli_stmt_execute($stmt);
     return $result;
 }
