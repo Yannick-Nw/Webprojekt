@@ -2,9 +2,9 @@
 -- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Erstellungszeit: 19. Apr 2023 um 14:14
--- Server-Version: 10.4.27-MariaDB
+-- Host: localhost:8889
+-- Erstellungszeit: 22. Apr 2023 um 13:32
+-- Server-Version: 5.7.39
 -- PHP-Version: 8.2.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -31,11 +31,11 @@ CREATE TABLE `appointments` (
   `id` int(11) NOT NULL,
   `title` varchar(255) DEFAULT NULL,
   `location` varchar(255) DEFAULT NULL,
-  `description` text DEFAULT NULL,
+  `description` text,
   `duration` int(11) DEFAULT NULL,
   `voting_end_date` datetime DEFAULT NULL,
   `actual_appointment` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -48,8 +48,8 @@ CREATE TABLE `appointment_participants` (
   `appointment_id` int(11) NOT NULL,
   `date_id` int(11) NOT NULL,
   `participant_id` int(11) NOT NULL,
-  `vote` int(3) DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `vote` int(3) DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -62,7 +62,7 @@ CREATE TABLE `dates` (
   `appointment_id` int(11) DEFAULT NULL,
   `date` date DEFAULT NULL,
   `time` time DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -74,9 +74,8 @@ CREATE TABLE `participants` (
   `id` int(11) NOT NULL,
   `appointment_id` int(11) NOT NULL,
   `username` varchar(255) NOT NULL,
-  `vote_response` int(11) NOT NULL,
   `comment` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Indizes der exportierten Tabellen
@@ -101,13 +100,15 @@ ALTER TABLE `appointment_participants`
 -- Indizes für die Tabelle `dates`
 --
 ALTER TABLE `dates`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `appointment_id` (`appointment_id`);
 
 --
 -- Indizes für die Tabelle `participants`
 --
 ALTER TABLE `participants`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `appointment_id` (`appointment_id`);
 
 --
 -- AUTO_INCREMENT für exportierte Tabellen
@@ -117,13 +118,19 @@ ALTER TABLE `participants`
 -- AUTO_INCREMENT für Tabelle `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `appointment_participants`
+--
+ALTER TABLE `appointment_participants`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `dates`
 --
 ALTER TABLE `dates`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000001;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `participants`
@@ -142,6 +149,18 @@ ALTER TABLE `appointment_participants`
   ADD CONSTRAINT `appointment_participants_ibfk_1` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`id`),
   ADD CONSTRAINT `appointment_participants_ibfk_2` FOREIGN KEY (`date_id`) REFERENCES `dates` (`id`),
   ADD CONSTRAINT `appointment_participants_ibfk_3` FOREIGN KEY (`participant_id`) REFERENCES `participants` (`id`);
+
+--
+-- Constraints der Tabelle `dates`
+--
+ALTER TABLE `dates`
+  ADD CONSTRAINT `dates_ibfk_1` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints der Tabelle `participants`
+--
+ALTER TABLE `participants`
+  ADD CONSTRAINT `participants_ibfk_1` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
