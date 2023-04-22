@@ -81,6 +81,7 @@ function appointmentChoice(choice) {
 		success: function (response) {
 			console.log(response);
 			var participentOld = "0";
+			var dateOld = "";
 			for (var i = 0; i < response.length; i++) {
 				var appointmentObjekt = response[i];
 				if ("title" in appointmentObjekt) {
@@ -89,20 +90,20 @@ function appointmentChoice(choice) {
 					var description = appointmentObjekt.description;
 					$("#appointmentDetailsDescription").text(description);
 				}
-                
+
 				if ("date" in appointmentObjekt) {
 					var date = appointmentObjekt.date;
 					var trDate = $("#appointmentDates"); // Zugriff auf das Zeile-Element
-					var dateOld = "";
+					console.log(date, dateOld);
 					if (dateOld !== date) {
 						var tdDate = $("<td></td>").text(date).attr("id", i); // Erstellen und Hinzufügen von Zellen zur Zeile
 						trDate.append(tdDate);
 						dateOld = date;
 						var multiCell = 1;
 					} else {
-                        var cellCount = multiCell;
-						multiCell = multiCell + 1;
+						var cellCount = multiCell;
 						$(i - cellCount).attr("colspan", multiCell);
+						multiCell = multiCell + 1;
 					}
 				}
 
