@@ -106,14 +106,12 @@ class DataHandler
         $stmt->execute();
     }
 
-
     public function deleteAppointment($id)
     {
         $stmt = $this->conn->prepare("DELETE FROM appointments WHERE id=?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
     }
-
 
     public function queryAppointmentParticipants($appointment_id)
     {
@@ -140,7 +138,6 @@ class DataHandler
 
         return $participants;
     }
-
 
     public function insertAppointmentParticipant(array $data)
     {
@@ -182,9 +179,6 @@ class DataHandler
         $stmt->close();
     }
 
-
-
-
     public function queryParticipants($appointment_id)
     {
         $participants = array();
@@ -215,7 +209,7 @@ class DataHandler
         $query = "INSERT INTO participants (appointment_id, username, comment) VALUES (?, ?, ?)";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param('iss', $data['appointment_id'], $data['username'], $data['comment']);
-        $result = $stmt->execute();
+        $stmt->execute();
     }
 
 
