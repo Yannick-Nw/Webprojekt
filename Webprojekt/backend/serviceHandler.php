@@ -1,7 +1,7 @@
 <?php
 include("businesslogic/simpleLogic.php");
 
-$param = "";
+$param = null;
 $method = "";
 
 isset($_GET["method"]) ? $method = $_GET["method"] : false;

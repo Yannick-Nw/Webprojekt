@@ -21,32 +21,6 @@ class DataHandler
         }
     }
 
-    /*public function queryAppointments($fields = [], $appointment_id = null)
-    {
-        $appointments = array();
-
-        $fieldsStr = implode(",", $fields);
-        $query = "SELECT $fieldsStr FROM appointments";
-        if ($appointment_id !== null) {
-            $query .= " WHERE id=?";
-        }
-
-        $stmt = mysqli_prepare($this->conn, $query);
-        if ($appointment_id !== null) {
-            mysqli_stmt_bind_param($stmt, "i", $appointment_id);
-        }
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-
-        if (mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_assoc($result)) {
-                array_push($appointments, $row);
-            }
-        }
-
-        return $appointments;
-    }*/
-
     public function queryAppointments($appointment_id = null)
     {
         $appointments = array();

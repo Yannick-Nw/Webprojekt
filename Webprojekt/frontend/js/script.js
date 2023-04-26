@@ -20,7 +20,7 @@ $(document).ready(function () {
 function loaddata(requestTyp) {
 	$.ajax({
 		url: "../backend/serviceHandler.php",
-		data: { param: requestTyp },
+		data: { method: "queryAppointments"},
 		dataType: "json",
 		success: function (response) {
 			console.log(response);
@@ -68,8 +68,8 @@ function loaddata(requestTyp) {
 					$("#appointmentDetails").show();
 				});
 		},
-		error: function () {
-			console.log("Ein Fehler ist aufgetreten: Bei Main");
+		error: function (jqXHR, textStatus, errorThrown) {
+			console.log("Fehler: " + jqXHR.responseText);
 		},
 	});
 }
