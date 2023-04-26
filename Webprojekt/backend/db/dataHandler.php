@@ -148,14 +148,15 @@ class DataHandler
         return $dates;
     }
 
-    public function insertDate($appointment_id, $date, $time)
+    public function insertDate(array $data)
     {
         $stmt = $this->conn->prepare("INSERT INTO dates (appointment_id, date, time) VALUES (?, ?, ?)");
-        $stmt->bind_param("iss", $appointment_id, $date, $time);
+        $stmt->bind_param("iss", $data['appointment_id'], $data['date'], $data['time']);
         $result = $stmt->execute();
         $stmt->close();
         return $result;
     }
+
 
 
 
@@ -184,14 +185,15 @@ class DataHandler
 
 
 
-    public function insertParticipant($appointment_id, $username)
+    public function insertParticipant(array $data)
     {
-        $query = "INSERT INTO participants (appointment_id, username, comment) VALUES (?, ?, NULL)";
-        $stmt = mysqli_prepare($this->conn, $query);
-        mysqli_stmt_bind_param($stmt, 'is', $appointment_id, $username);
-        $result = mysqli_stmt_execute($stmt);
+        $query = "INSERT INTO participants (appointment_id, username, comment) VALUES (?, ?, ?)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param('iss', $data['appointment_id'], $data['username'], $data['comment']);
+        $result = $stmt->execute();
         return $result;
     }
+
 
     function __destruct()
     {
