@@ -80,6 +80,21 @@ class DataHandler
         return $appointments;
     }
 
+    public function insertAppointment($appointmentData)
+    {
+        $keys = array_keys($appointmentData);
+        $values = array_values($appointmentData);
+
+        $keysStr = implode(",", $keys);
+        $placeholders = implode(",", array_fill(0, count($values), "?"));
+
+        $query = "INSERT INTO appointments ($keysStr) VALUES ($placeholders)";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param(str_repeat("s", count($values)), ...$values);
+        $stmt->execute();
+    }
+
     public function deleteAppointment($id)
     {
         $stmt = $this->conn->prepare("DELETE FROM appointments WHERE id=?");
@@ -87,6 +102,7 @@ class DataHandler
         $stmt->execute();
     }
 
+    
     public function queryAppointmentParticipants($appointment_id)
     {
         $participants = array();
