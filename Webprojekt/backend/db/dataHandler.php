@@ -1,8 +1,7 @@
 <?php
 
-require_once("../backend/models/appointment.php");
-//require_once ("user.php");
-require_once("config.php");
+require_once "../backend/models/appointment.php";
+require_once "config.php";
 
 class DataHandler
 {
@@ -12,24 +11,28 @@ class DataHandler
     {
         global $host, $username, $password, $dbname;
 
+        // Verbindung zur Datenbank herstellen
         $this->conn = new mysqli($host, $username, $password, $dbname);
 
+        // Überprüfen, ob die Verbindung erfolgreich war
         if ($this->conn->connect_error) {
             die("Connection failed: " . $this->conn->connect_error);
-        } else {
-            //echo "Connected successfully";
         }
     }
 
     public function queryAppointments($appointment_id = null)
     {
-        $appointments = array();
+        $appointments = [];
 
-        $query = "SELECT *, CASE WHEN voting_end_date > NOW() THEN 'open' ELSE 'closed' END AS vote_status FROM appointments";
+        // SQL-Abfrage erstellen
+        $query =
+            "SELECT *, CASE WHEN voting_end_date > NOW() THEN 'open' ELSE 'closed' END AS vote_status FROM appointments";
 
         if ($appointment_id !== null) {
             $query .= " WHERE id=?";
         }
+
+        // SQL-Abfrage ausführen
         $stmt = $this->conn->prepare($query);
         if ($appointment_id !== null) {
             $stmt->bind_param("i", $appointment_id);
@@ -37,18 +40,22 @@ class DataHandler
         $stmt->execute();
         $result = $stmt->get_result();
 
+        // Ergebnisse verarbeiten
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                if ($row['vote_status'] === 'closed') {
-                    // Set a flag to indicate that the appointment cannot be voted on
-                    $row['vote_status'] = 'Geschlossen';
-                    // Update the vote_status in the database
-                    $update_query = "UPDATE appointments SET vote_status = 0 WHERE id = ?";
+                if ($row["vote_status"] === "closed") {
+                    // Flag setzen, um anzuzeigen, dass die Abstimmung nicht möglich ist
+                    $row["vote_status"] = "Geschlossen";
+
+                    // vote_status in der Datenbank aktualisieren
+                    $update_query =
+                        "UPDATE appointments SET vote_status = 0 WHERE id = ?";
                     $update_stmt = $this->conn->prepare($update_query);
-                    $update_stmt->bind_param("i", $row['id']);
+                    $update_stmt->bind_param("i", $row["id"]);
                     $update_stmt->execute();
                 } else {
-                    $row['vote_status'] = 'Offen';
+                    // Flag setzen, um anzuzeigen, dass die Abstimmung möglich ist
+                    $row["vote_status"] = "Offen";
                 }
                 array_push($appointments, $row);
             }
@@ -58,17 +65,23 @@ class DataHandler
 
     public function insertAppointment($appointmentData)
     {
+        // Erstelle ein Array mit den Schlüsseln der Termin-Daten
         $keys = array_keys($appointmentData);
+        // Erstelle ein Array mit den Werten der Termin-Daten
         $values = array_values($appointmentData);
 
+        // Erstelle einen String mit den Schlüsseln, getrennt durch Kommas
         $keysStr = implode(",", $keys);
+        // Erstelle einen String mit Platzhaltern für die Werte
         $placeholders = implode(",", array_fill(0, count($values), "?"));
 
+        // Erstelle die SQL-Abfrage mit den Schlüsseln und Platzhaltern
         $query = "INSERT INTO appointments ($keysStr) VALUES ($placeholders)";
 
+        // Bereite die Abfrage vor
         $stmt = $this->conn->prepare($query);
 
-        // Create the type parameter dynamically based on the data types of the values
+        // Erstelle den Typ-Parameter dynamisch basierend auf den Datentypen der Werte
         $types = "";
         foreach ($values as $value) {
             if (is_int($value)) {
@@ -78,99 +91,153 @@ class DataHandler
             }
         }
 
+        // Binde die Werte an die Abfrage und führe sie aus
         $stmt->bind_param($types, ...$values);
         $stmt->execute();
     }
 
     public function deleteAppointment($id)
     {
+        // Bereite die Abfrage vor
         $stmt = $this->conn->prepare("DELETE FROM appointments WHERE id=?");
+        // Binde den Wert an die Abfrage
         $stmt->bind_param("i", $id);
+        // Führe die Abfrage aus
         $stmt->execute();
     }
 
     public function queryAppointmentParticipants($appointment_id)
     {
-        $participants = array();
+        // Erstelle ein leeres Array für die Teilnehmer
+        $participants = [];
 
-        $query = "SELECT * FROM appointment_participants WHERE appointment_id = ?";
+        // Erstelle die SQL-Abfrage
+        $query =
+            "SELECT * FROM appointment_participants WHERE appointment_id = ?";
+        // Bereite die Abfrage vor
         $stmt = $this->conn->prepare($query);
+        // Binde den Wert an die Abfrage
         $stmt->bind_param("i", $appointment_id);
+        // Führe die Abfrage aus
         $stmt->execute();
+        // Hole das Ergebnis der Abfrage
         $result = $stmt->get_result();
 
+        // Wenn es Ergebnisse gibt, füge sie dem Array hinzu
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                $participant = array(
+                $participant = [
                     "id" => $row["id"],
                     "appointment_id" => $row["appointment_id"],
                     "date_id" => $row["date_id"],
                     "participant_id" => $row["participant_id"],
-                    "vote" => $row["vote"]
-                );
+                    "vote" => $row["vote"],
+                ];
                 array_push($participants, $participant);
             }
         }
 
+        // Gib das Array zurück
         return $participants;
     }
 
     public function insertAppointmentParticipant(array $data)
     {
-        $stmt = $this->conn->prepare("INSERT INTO appointment_participants (appointment_id, participant_id, date_id, vote) VALUES (?, ?, ?)");
-        $stmt->bind_param("iii", $data['appointment_id'], $data['participant_id'], $data['date_id'], $data['vote']);
+        // Bereite die Abfrage vor
+        $stmt = $this->conn->prepare(
+            "INSERT INTO appointment_participants (appointment_id, participant_id, date_id, vote) VALUES (?, ?, ?)"
+        );
+        // Binde die Werte an die Abfrage
+        $stmt->bind_param(
+            "iii",
+            $data["appointment_id"],
+            $data["participant_id"],
+            $data["date_id"],
+            $data["vote"]
+        );
+        // Führe die Abfrage aus
         $result = $stmt->execute();
+        // Schließe die Abfrage
         $stmt->close();
     }
 
     public function queryDates($appointment_id)
     {
-        $dates = array();
+        // Erstelle ein leeres Array für die Daten
+        $dates = [];
 
-        $stmt = $this->conn->prepare("SELECT * FROM dates WHERE appointment_id = ?");
+        // Bereite die Abfrage vor
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM dates WHERE appointment_id = ?"
+        );
+        // Binde den Wert an die Abfrage
         $stmt->bind_param("i", $appointment_id);
+        // Führe die Abfrage aus
         $stmt->execute();
+        // Hole das Ergebnis der Abfrage
         $result = $stmt->get_result();
 
+        // Wenn es Ergebnisse gibt, füge sie dem Array hinzu
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                $date = array(
+                $date = [
                     "id" => $row["id"],
                     "appointment_id" => $row["appointment_id"],
                     "date" => $row["date"],
-                    "time" => $row["time"]
-                );
+                    "time" => $row["time"],
+                ];
                 array_push($dates, $date);
             }
         }
 
+        // Gib das Array zurück
         return $dates;
     }
 
     public function insertDate(array $data)
     {
-        $stmt = $this->conn->prepare("INSERT INTO dates (appointment_id, date, time) VALUES (?, ?, ?)");
-        $stmt->bind_param("iss", $data['appointment_id'], $data['date'], $data['time']);
+        // SQL-Anweisung vorbereiten
+        $stmt = $this->conn->prepare(
+            "INSERT INTO dates (appointment_id, date, time) VALUES (?, ?, ?)"
+        );
+        // Parameter an die Anweisung binden
+        $stmt->bind_param(
+            "iss",
+            $data["appointment_id"],
+            $data["date"],
+            $data["time"]
+        );
+        // Anweisung ausführen
         $result = $stmt->execute();
+        // Anweisung schließen
         $stmt->close();
     }
 
     public function queryParticipants($appointment_id)
     {
-        $participants = array();
-        $stmt = $this->conn->prepare("SELECT id, appointment_id, username, comment FROM participants WHERE appointment_id = ?");
+        // Array für Teilnehmer
+        $participants = [];
+        // SQL-Abfrage zum Abrufen von Teilnehmern aus der Tabelle "participants"
+        $stmt = $this->conn->prepare(
+            "SELECT id, appointment_id, username, comment FROM participants WHERE appointment_id = ?"
+        );
+        // Binden des Parameters an die SQL-Abfrage
         $stmt->bind_param("i", $appointment_id);
+        // Ausführen der SQL-Abfrage
         $stmt->execute();
+        // Abrufen des Ergebnisses der SQL-Abfrage
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                $participant = array(
+                // Erstellen eines Teilnehmer-Arrays
+                $participant = [
                     "id" => $row["id"],
                     "appointment_id" => $row["appointment_id"],
                     "username" => $row["username"],
-                    "comment" => $row["comment"]
-                );
+                    "comment" => $row["comment"],
+                ];
+                // Hinzufügen des Teilnehmer-Arrays zum Array der Teilnehmer
                 array_push($participants, $participant);
             }
         }
@@ -178,17 +245,25 @@ class DataHandler
         return $participants;
     }
 
-
-
     public function insertParticipant(array $data)
     {
-        $query = "INSERT INTO participants (appointment_id, username, comment) VALUES (?, ?, ?)";
+        // SQL-Abfrage zum Einfügen eines Teilnehmers in die Tabelle "participants"
+        $query =
+            "INSERT INTO participants (appointment_id, username, comment) VALUES (?, ?, ?)";
+        // Vorbereiten der SQL-Abfrage
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param('iss', $data['appointment_id'], $data['username'], $data['comment']);
+        // Binden der Parameter an die SQL-Abfrage
+        $stmt->bind_param(
+            "iss",
+            $data["appointment_id"],
+            $data["username"],
+            $data["comment"]
+        );
+        // Ausführen der SQL-Abfrage
         $stmt->execute();
     }
 
-
+    // Schließen der Datenbankverbindung am Ende des Skripts
     function __destruct()
     {
         mysqli_close($this->conn);
