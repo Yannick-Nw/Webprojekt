@@ -34,7 +34,7 @@ CREATE TABLE `appointments` (
   `description` text,
   `duration` int(11) DEFAULT NULL,
   `voting_end_date` datetime DEFAULT NULL,
-  `vote_status` datetime NOT NULL
+  `vote_status` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
