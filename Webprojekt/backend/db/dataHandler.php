@@ -152,7 +152,6 @@ class DataHandler
         $stmt->bind_param("iss", $data['appointment_id'], $data['date'], $data['time']);
         $result = $stmt->execute();
         $stmt->close();
-        return $result;
     }
 
 
@@ -189,7 +188,6 @@ class DataHandler
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param('iss', $data['appointment_id'], $data['username'], $data['comment']);
         $result = $stmt->execute();
-        return $result;
     }
 
 
