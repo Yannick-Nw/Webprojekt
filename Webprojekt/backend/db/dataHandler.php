@@ -84,7 +84,7 @@ class DataHandler
     {
         $stmt = $this->conn->prepare("DELETE FROM appointments WHERE id=?");
         $stmt->bind_param("i", $id);
-        return $stmt->execute();
+        $stmt->execute();
     }
 
     public function queryAppointmentParticipants($appointment_id)
