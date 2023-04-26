@@ -58,15 +58,15 @@ class DataHandler
             $query .= " WHERE id=?";
         }
 
-        $stmt = mysqli_prepare($this->conn, $query);
+        $stmt = $this->conn->prepare($query);
         if ($appointment_id !== null) {
-            mysqli_stmt_bind_param($stmt, "i", $appointment_id);
+            $stmt->bind_param("i", $appointment_id);
         }
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        if (mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_assoc($result)) {
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
                 if ($row['vote_status'] === 'closed') {
                     // Set a flag to indicate that the appointment cannot be voted on
                     $row['can_vote'] = false;
@@ -79,8 +79,6 @@ class DataHandler
         }
         return $appointments;
     }
-
-
 
     public function deleteAppointment($id)
     {
@@ -115,18 +113,14 @@ class DataHandler
         return $participants;
     }
 
-    public function insertAppointmentParticipant($appointment_id, $participant_id, $vote)
+    public function insertAppointmentParticipant(array $data)
     {
         $stmt = $this->conn->prepare("INSERT INTO appointment_participants (appointment_id, participant_id, vote) VALUES (?, ?, ?)");
-        $stmt->bind_param("iii", $appointment_id, $participant_id, $vote);
+        $stmt->bind_param("iii", $data['appointment_id'], $data['participant_id'], $data['vote']);
         $result = $stmt->execute();
         $stmt->close();
 
-        if ($result) {
-            return true;
-        } else {
-            return false;
-        }
+        return $result; //?
     }
 
     public function queryDates($appointment_id)
