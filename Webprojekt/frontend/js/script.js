@@ -77,7 +77,7 @@ function loaddata(requestTyp) {
 function appointmentChoice(choice) {
 	$.ajax({
 		url: "../backend/serviceHandler.php",
-		data: { param: "details", id: choice },
+		data: { method: "queryDates", param: choice },
 		dataType: "json",
 		success: function (response) {
 			console.log(response);
