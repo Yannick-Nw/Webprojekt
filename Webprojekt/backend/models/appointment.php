@@ -1,12 +1,14 @@
 <?php
-class Appointment {
+class Appointment
+{
     public $id;
     public $title;
     public $location;
     public $start_time;
     public $end_time;
 
-    public function __construct($id, $title, $location, $start, $end) {
+    public function __construct($id, $title, $location, $start, $end)
+    {
         $this->id = $id;
         $this->title = $title;
         $this->location = $location;
