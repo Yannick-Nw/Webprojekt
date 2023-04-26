@@ -52,7 +52,7 @@ class DataHandler
     $appointments = array();
 
     $fieldsStr = implode(",", $fields);
-    $query = "SELECT $fieldsStr, CASE WHEN vote_end_time > NOW() THEN 'open' ELSE 'closed' END AS vote_status FROM appointments";
+    $query = "SELECT $fieldsStr, CASE WHEN voting_end_date > NOW() THEN 'open' ELSE 'closed' END AS vote_status FROM appointments";
 
     if ($appointment_id !== null) {
         $query .= " WHERE id=?";
