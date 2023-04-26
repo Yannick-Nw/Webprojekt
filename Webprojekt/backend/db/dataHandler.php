@@ -47,17 +47,15 @@ class DataHandler
         return $appointments;
     }*/
 
-    public function queryAppointments($fields = [], $appointment_id = null)
+    public function queryAppointments($appointment_id = null)
     {
         $appointments = array();
 
-        $fieldsStr = implode(",", $fields);
-        $query = "SELECT $fieldsStr, CASE WHEN voting_end_date > NOW() THEN 'open' ELSE 'closed' END AS vote_status FROM appointments";
+        $query = "SELECT *, CASE WHEN voting_end_date > NOW() THEN 'open' ELSE 'closed' END AS vote_status FROM appointments";
 
         if ($appointment_id !== null) {
             $query .= " WHERE id=?";
         }
-
         $stmt = $this->conn->prepare($query);
         if ($appointment_id !== null) {
             $stmt->bind_param("i", $appointment_id);
@@ -69,11 +67,15 @@ class DataHandler
             while ($row = $result->fetch_assoc()) {
                 if ($row['vote_status'] === 'closed') {
                     // Set a flag to indicate that the appointment cannot be voted on
-                    $row['can_vote'] = false;
+                    $row['vote_status'] = false;
+                    // Update the vote_status in the database
+                    $update_query = "UPDATE appointments SET vote_status = 0 WHERE id = ?";
+                    $update_stmt = $this->conn->prepare($update_query);
+                    $update_stmt->bind_param("i", $row['id']);
+                    $update_stmt->execute();
                 } else {
-                    $row['can_vote'] = true;
+                    $row['vote_status'] = true;
                 }
-                unset($row['vote_status']);
                 array_push($appointments, $row);
             }
         }

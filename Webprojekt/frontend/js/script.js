@@ -32,6 +32,7 @@ function loaddata(requestTyp) {
 				var duration = appointmentObjekt.duration;
 				var end_time = new Date(appointmentObjekt.voting_end_date);
 				var end_time = end_time.toString("dd.MM.yyyy");
+				var status = appointmentObjekt.duration;
 
 				console.log(appointmentObjekt);
 				var tbodyMain = $("#tableRows"); // Zugriff auf das tbody-Element
