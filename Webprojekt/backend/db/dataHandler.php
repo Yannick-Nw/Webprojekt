@@ -77,6 +77,7 @@ class DataHandler
             array_push($appointments, $row);
         }
     }
+    return $appointments;
 }
 
 
