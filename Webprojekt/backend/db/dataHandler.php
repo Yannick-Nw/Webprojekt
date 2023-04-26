@@ -92,13 +92,13 @@ class DataHandler
         $participants = array();
 
         $query = "SELECT * FROM appointment_participants WHERE appointment_id = ?";
-        $stmt = mysqli_prepare($this->conn, $query);
-        mysqli_stmt_bind_param($stmt, "i", $appointment_id);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $appointment_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        if (mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_assoc($result)) {
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
                 $participant = array(
                     "id" => $row["id"],
                     "appointment_id" => $row["appointment_id"],
@@ -112,6 +112,7 @@ class DataHandler
 
         return $participants;
     }
+
 
     public function insertAppointmentParticipant(array $data)
     {
