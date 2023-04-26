@@ -13,7 +13,7 @@ class SimpleLogic
     {
         switch ($method) {
             case "queryAppointments";
-                $res = $this->dh->queryAppointments();
+                $res = $this->dh->queryAppointments($param, $);
                 break;
             case "deleteAppointment";
                 $res = $this->dh->deleteAppointment($param);
@@ -22,19 +22,19 @@ class SimpleLogic
                 $res = $this->dh->queryAppointmentParticipants($param);
                 break;
             case "insertAppointmentParticipant";
-                $res = $this->dh->insertAppointmentParticipant($param, $param, $param);
+                $res = $this->dh->insertAppointmentParticipant($param, $, $);
                 break;
             case "queryDates";
                 $res = $this->dh->queryDates($param);
                 break;
             case "insertDate";
-                $res = $this->dh->insertDate($param, $param, $param);
+                $res = $this->dh->insertDate($param, $, $);
                 break;
             case "queryParticipants";
                 $res = $this->dh->queryParticipants($param);
                 break;
             case "insertParticipant";
-                $res = $this->dh->insertParticipant($param, $param);
+                $res = $this->dh->insertParticipant($param, $);
                 break;
             default:
                 $res = null;
