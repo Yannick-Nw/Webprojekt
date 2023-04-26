@@ -116,8 +116,8 @@ class DataHandler
 
     public function insertAppointmentParticipant(array $data)
     {
-        $stmt = $this->conn->prepare("INSERT INTO appointment_participants (appointment_id, participant_id, vote) VALUES (?, ?, ?)");
-        $stmt->bind_param("iii", $data['appointment_id'], $data['participant_id'], $data['vote']);
+        $stmt = $this->conn->prepare("INSERT INTO appointment_participants (appointment_id, participant_id, date_id, vote) VALUES (?, ?, ?)");
+        $stmt->bind_param("iii", $data['appointment_id'], $data['participant_id'], $data['date_id'], $data['vote']);
         $result = $stmt->execute();
         $stmt->close();
 
