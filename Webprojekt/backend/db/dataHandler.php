@@ -120,8 +120,6 @@ class DataHandler
         $stmt->bind_param("iii", $data['appointment_id'], $data['participant_id'], $data['date_id'], $data['vote']);
         $result = $stmt->execute();
         $stmt->close();
-
-        return $result; //?
     }
 
     public function queryDates($appointment_id)
