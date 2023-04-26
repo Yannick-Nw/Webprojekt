@@ -91,9 +91,21 @@ class DataHandler
         $query = "INSERT INTO appointments ($keysStr) VALUES ($placeholders)";
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param(str_repeat("s", count($values)), ...$values);
+
+        // Create the type parameter dynamically based on the data types of the values
+        $types = "";
+        foreach ($values as $value) {
+            if (is_int($value)) {
+                $types .= "i";
+            } else {
+                $types .= "s";
+            }
+        }
+
+        $stmt->bind_param($types, ...$values);
         $stmt->execute();
     }
+
 
     public function deleteAppointment($id)
     {
@@ -102,7 +114,7 @@ class DataHandler
         $stmt->execute();
     }
 
-    
+
     public function queryAppointmentParticipants($appointment_id)
     {
         $participants = array();
