@@ -67,14 +67,14 @@ class DataHandler
             while ($row = $result->fetch_assoc()) {
                 if ($row['vote_status'] === 'closed') {
                     // Set a flag to indicate that the appointment cannot be voted on
-                    $row['vote_status'] = false;
+                    $row['vote_status'] = 'Geschlossen';
                     // Update the vote_status in the database
                     $update_query = "UPDATE appointments SET vote_status = 0 WHERE id = ?";
                     $update_stmt = $this->conn->prepare($update_query);
                     $update_stmt->bind_param("i", $row['id']);
                     $update_stmt->execute();
                 } else {
-                    $row['vote_status'] = true;
+                    $row['vote_status'] = 'Offen';
                 }
                 array_push($appointments, $row);
             }

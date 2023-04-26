@@ -32,7 +32,7 @@ function loaddata(requestTyp) {
 				var duration = appointmentObjekt.duration;
 				var end_time = new Date(appointmentObjekt.voting_end_date);
 				var end_time = end_time.toString("dd.MM.yyyy");
-				var status = appointmentObjekt.duration;
+				var status = appointmentObjekt.vote_status;
 
 				console.log(appointmentObjekt);
 				var tbodyMain = $("#tableRows"); // Zugriff auf das tbody-Element
@@ -53,7 +53,7 @@ function loaddata(requestTyp) {
 				var td4 = $("<td></td>").addClass("max-md:hidden").text(end_time);
 				tr.append(td4);
 
-				var td5 = $("<td></td>").text("Status fehlt");
+				var td5 = $("<td></td>").text(status);
 				tr.append(td5);
 
 				tbodyMain.append(tr); // Hinzufügen der Zeile zur Tabelle

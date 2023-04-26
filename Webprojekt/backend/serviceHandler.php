@@ -5,7 +5,7 @@ if (!empty($_GET['param'])) {
     $requestTyp = $_GET['param'];
     header("Content-Type: application/json");
     if ($requestTyp == 'main') {
-        $appointments = $result->queryAppointments(["id", "title", "location", "duration", "voting_end_date", "actual_appointment"]);
+        $appointments = $result->queryAppointments();
         //$participants = $result->queryParticipants();
         //$merged_array = array_merge($appointments, $participants);
         echo json_encode($appointments);
