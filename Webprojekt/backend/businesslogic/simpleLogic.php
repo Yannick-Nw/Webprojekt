@@ -9,7 +9,7 @@ class SimpleLogic
         $this->dh = new DataHandler();
     }
 
-    function handleRquest($method, $param)
+    function handleRequest($method, $param)
     {
         switch ($method) {
             case "queryAppointments";
