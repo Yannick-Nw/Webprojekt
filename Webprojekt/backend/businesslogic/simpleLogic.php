@@ -12,34 +12,34 @@ class SimpleLogic
     function handleRequest($method, $param)
     {
         switch ($method) {
-            case "queryAppointments";
+            case "queryAppointments"; // Abfrage von Terminen
                 $res = $this->dh->queryAppointments($param);
                 break;
-            case "deleteAppointment";
+            case "deleteAppointment"; // Löschen von Terminen
                 $res = $this->dh->deleteAppointment($param);
                 break;
-            case "queryAppointmentParticipants";
+            case "queryAppointmentParticipants"; // Abfrage von Teilnehmern eines Termins
                 $res = $this->dh->queryAppointmentParticipants($param);
                 break;
-            case "insertAppointmentParticipant";
+            case "insertAppointmentParticipant"; // Einfügen eines Teilnehmers in einen Termin
                 $res = $this->dh->insertAppointmentParticipant($param);
                 break;
-            case "queryDates";
+            case "queryDates"; // Abfrage von Daten
                 $res = $this->dh->queryDates($param);
                 break;
-            case "insertDate";
+            case "insertDate"; // Einfügen von Daten
                 $res = $this->dh->insertDate($param);
                 break;
-            case "queryParticipants";
+            case "queryParticipants"; // Abfrage von Teilnehmern
                 $res = $this->dh->queryParticipants($param);
                 break;
-            case "insertParticipant";
+            case "insertParticipant"; // Einfügen eines Teilnehmers
                 $res = $this->dh->insertParticipant($param);
                 break;
             default:
-                $res = null;
+                $res = null; // Standardfall
                 break;
         }
-        return $res;
+        return $res; // Rückgabe des Ergebnisses
     }
 }
