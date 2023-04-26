@@ -14,15 +14,30 @@ $(document).ready(function () {
 		$("#allAppointments").show();
 	});
 });
-//$("p").children().on("click", function()
-//data: {param: }
 
 function loaddata(requestTyp) {
-	$.ajax({
-		url: "../backend/serviceHandler.php",
-		data: { method: "queryAppointments"},
-		dataType: "json",
-		success: function (response) {
+	$.when(
+		$.ajax({
+			url: "../backend/serviceHandler.php",
+			data: { method: "queryAppointments", param: choice },
+			dataType: "json"
+		}),
+		$.ajax({
+			url: "../backend/serviceHandler.php",
+			data: { method: "queryDates", param: choice },
+			dataType: "json"
+		}),
+		$.ajax({
+			url: "../backend/serviceHandler.php",
+			data: { method: "queryParticipants", param: choice },
+			dataType: "json"
+		}),
+		$.ajax({
+			url: "../backend/serviceHandler.php",
+			data: { method: "queryAppointmentParticipants", param: choice },
+			dataType: "json"
+		})
+	).done(function (response) {
 			console.log(response);
 			for (var i = 0; i < response.length; i++) {
 				var appointmentObjekt = response[i];
