@@ -105,8 +105,12 @@ function appointmentChoice(choice) {
 				//if ("title" in appointmentObjekt) {
 				let name = appointmentObjekt.title;
 				$("#appointmentDetailsName").text(name);
-				let description = appointmentObjekt.description + "<br>Abblaufdatum: " + appointmentObjekt.voting_end_date;
-				description = description + "<br>Dauer: " + appointmentObjekt.duration + " Minuten";
+				let description =
+					appointmentObjekt.description +
+					"<br>Abblaufdatum: " +
+					appointmentObjekt.voting_end_date;
+				description =
+					description + "<br>Dauer: " + appointmentObjekt.duration + " Minuten";
 				description = description + "<br>Ort: " + appointmentObjekt.location;
 				$("#appointmentDetailsDescription").html(description);
 				//}
@@ -179,6 +183,7 @@ function appointmentChoice(choice) {
 						}
 					}
 				}
+				checkbox();
 				//}
 			}
 		})
@@ -186,28 +191,28 @@ function appointmentChoice(choice) {
 			console.log("Fehler: " + jqXHR.responseText + " : " + errorThrown);
 		});
 }
-/*
-function insertVotes(count, id) {
-	switch (count) {
-		case 1: var method = ""
-			
-			break;
-		case 2:
 
-			break;
-		default:
-			break;
-	}
-	$.ajax({
-		url: "../backend/serviceHandler.php",
-		data: { method: param: },
-		dataType: "json",
-		success: function (response) {
+function checkbox(){
+	let count = 0;
+	$('#detailsName').off('input').on('input', function(){
+		let inputValue = $(this).val();
+		if (count == 0) {
+			count = count + 1;
+			let tbodyDetails = $("#particpantsPicks");
+			let numTd = tbodyDetails.find('tr:last-child td').length;
+			let trParticpants = $("<tr></tr>").addClass("h-12").attr("id", "currentUserVotes");
+			let tdName = $("<td></td>").text(inputValue).attr("id", "currentUserName");
+			trParticpants.append(tdName);
 
-		},
-		error: function (jqXHR, textStatus, errorThrown) {
-			console.log("Fehler: " + jqXHR.responseText);
-		},
+			for (let i = 0; i < numTd - 1; i++) {
+				let checkbox = $("<td></td>").html('<input type="checkbox" name="example">');
+				trParticpants.append(checkbox);
+			}
+
+			tbodyDetails.append(trParticpants);
+		} else {
+			$('#currentUserName').text(inputValue);
+		}
 	});
 }
 */
