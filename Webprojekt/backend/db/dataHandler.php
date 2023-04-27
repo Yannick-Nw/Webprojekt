@@ -63,7 +63,7 @@ class DataHandler
         return $appointments;
     }
 
-    public function insertAppointment($appointmentData)
+    public function createAppointment($appointmentData)
     {
         // Erstelle ein Array mit den Schlüsseln der Termin-Daten
         $keys = array_keys($appointmentData);

@@ -15,6 +15,9 @@ class SimpleLogic
             case "queryAppointments"; // Abfrage von Terminen
                 $res = $this->dh->queryAppointments($param);
                 break;
+            case "createAppointment"; // Abfrage von Terminen
+                $res = $this->dh->createAppointment($param);
+                break;
             case "deleteAppointment"; // Löschen von Terminen
                 $res = $this->dh->deleteAppointment($param);
                 break;
