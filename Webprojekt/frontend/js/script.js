@@ -282,16 +282,42 @@ function insertVotes(id) {
 						console.log(data);
 						break;
 					case 1:
-						var methodeTyp = "insertAppointmentParticipant";
+						var methodeTyp = "queryDates";
 						break;
 					default:
 						break;
 				}
 				$.ajax({
 					url: "../backend/serviceHandler.php",
-					data: { method: methodeTyp, param: data },
-					method: "POST",
-					success: function (response) {},
+					data: { method: methodeTyp, param: id },
+					method: "GET",
+					success: function (response) {
+						if (methodeTyp === "queryDates") {
+							console.log(response);
+							for (let date = 0; date < response[0].length; date++) {
+								var date_id = response[0][date];
+								let checkboxName = "checkbox" + date;
+								let checkboxStatus = $(checkboxName).val();
+								var data = {appointment_id: , participant_id: , date_id: date_id, vote: checkboxStatus};
+								$.ajax({
+									url: "../backend/serviceHandler.php",
+									data: { method: "insertAppointmentParticipant", param: data },
+									method: "GET",
+									success: function (response) {
+										if (methodeTyp === "queryDates") {
+											console.log(response);
+											for (let date = 0; date < response[0].length; date++) {
+												var dates = response[0][date];
+											}
+										}
+									},
+									error: function (jqXHR, textStatus, errorThrown) {
+										console.log("Fehler: " + jqXHR.responseText);
+									},
+								});
+							}
+						}
+					},
 					error: function (jqXHR, textStatus, errorThrown) {
 						console.log("Fehler: " + jqXHR.responseText);
 					},

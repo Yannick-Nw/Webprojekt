@@ -261,6 +261,7 @@ class DataHandler
             $data["comment"]
         );
         // Ausführen der SQL-Abfrage
+        
         $stmt->execute();
         return true;
     }
