@@ -183,7 +183,7 @@ function appointmentChoice(choice) {
 						}
 					}
 				}
-				checkbox();
+				checkbox(choice);
 				//}
 			}
 		})
@@ -192,28 +192,47 @@ function appointmentChoice(choice) {
 		});
 }
 
-function checkbox(){
+function checkbox(appointment_id) {
 	let count = 0;
-	$('#detailsName').off('input').on('input', function(){
-		let inputValue = $(this).val();
-		if (count == 0) {
-			count = count + 1;
-			let tbodyDetails = $("#particpantsPicks");
-			let numTd = tbodyDetails.find('tr:last-child td').length;
-			let trParticpants = $("<tr></tr>").addClass("h-12").attr("id", "currentUserVotes");
-			let tdName = $("<td></td>").text(inputValue).attr("id", "currentUserName");
-			trParticpants.append(tdName);
+	$("#detailsName")
+		.off("input")
+		.on("input", function () {
+			let inputValue = $(this).val();
+			if (count == 0) {
+				count = count + 1;
+				let tbodyDetails = $("#particpantsPicks");
+				let numTd = tbodyDetails.find("tr:last-child td").length;
+				let trParticpants = $("<tr></tr>")
+					.addClass("h-12 bg-amber-950/25")
+					.attr("id", "currentUserVotes");
+				let tdName = $("<td></td>")
+					.text(inputValue)
+					.attr("id", "currentUserName");
+				trParticpants.append(tdName);
 
-			for (let i = 0; i < numTd - 1; i++) {
-				let checkbox = $("<td></td>").html('<input type="checkbox" name="example">');
-				trParticpants.append(checkbox);
+				for (let i = 0; i < numTd - 1; i++) {
+					let checkbox = $("<td></td>").html(
+						'<input id="checkbox' + i + '" type="checkbox" class="h-4 w-4">'
+					);
+					trParticpants.append(checkbox);
+				}
+
+				tbodyDetails.append(trParticpants);
+			} else {
+				$("#currentUserName").text(inputValue);
+				$("#detailsName").on("keyup", function (event) {
+					if (event.key === "Enter") {
+						$(this).val("");
+					}
+				});
+				if ($(this).val() === "") {
+					$("#currentUserVotes").hide();
+				} else {
+					$("#currentUserVotes").show();
+					insertVotes(appointment_id);
+				}
 			}
-
-			tbodyDetails.append(trParticpants);
-		} else {
-			$('#currentUserName').text(inputValue);
-		}
-	});
+		});
 }
 
 function createAppointment(title, location, description, duration, voting_end_date) {
@@ -236,3 +255,37 @@ function createAppointment(title, location, description, duration, voting_end_da
 	  }
 	});
   }
+function insertVotes(id) {
+	$("#insertVotesButton").off("click").on("click", function () {
+		// Code, der ausgeführt wird, wenn der Button geklickt wird
+		for (let count = 0; count <= 1; count++) {
+			switch (count) {
+				case 0:
+					var methodeTyp = "insertParticipant";
+					var comment = $("#kommentar").val();
+					var participentName = $("#currentUserName").text();
+					var data = {
+						appointment_id: id,
+						username: participentName,
+						comment: comment,
+					};
+					console.log(data)
+					break;
+				case 1:
+					var methodeTyp = "insertAppointmentParticipant";
+					break;
+				default:
+					break;
+			}
+			$.ajax({
+				url: "../backend/serviceHandler.php",
+				data: { method: methodeTyp, param: data },
+				method: 'POST',
+				success: function (response) {},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.log("Fehler: " + jqXHR.responseText);
+				},
+			});
+		}
+	});
+}

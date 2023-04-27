@@ -246,7 +246,7 @@ class DataHandler
         return $participants;
     }
 
-    public function insertParticipant(array $data)
+    public function insertParticipant($data)
     {
         // SQL-Abfrage zum Einfügen eines Teilnehmers in die Tabelle "participants"
         $query =
@@ -262,6 +262,7 @@ class DataHandler
         );
         // Ausführen der SQL-Abfrage
         $stmt->execute();
+        return true;
     }
 
     // Schließen der Datenbankverbindung am Ende des Skripts
