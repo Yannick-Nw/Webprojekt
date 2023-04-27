@@ -339,11 +339,10 @@ function createAppointmentSP () {
             // Create a new option element
             var newOption = $(
                 '<div>' +
-                    '<label class="block font-bold mb-1">Terminvorschlag ' + optionCount + ':</label>' +
-                    '<input type="checkbox" name="options" value="option' + optionCount + '">' +
-                    '<label for="option' + optionCount + '-date-and-time" class="block font-bold mb-1">Date and Time:</label>' +
-                    '<input type="datetime-local" class="w-full border rounded p-2" id="option' + optionCount + '-date-and-time" name="option' + optionCount + '-date-and-time">' +
-                '</div>'
+					'<label class="block font-bold mb-1">Terminvorschlag ' + optionCount + ':</label>' +
+					'<label for="option' + optionCount + '-date-and-time" class="block font-bold mb-1">Date and Time:</label>' +
+					'<input type="datetime-local" class="w-full border rounded p-2" id="option' + optionCount + '-date-and-time" name="option' + optionCount + '-date-and-time">' +
+				'</div>'
             );
             // Add the new option element to the options container
             $('#options-container').append(newOption);
