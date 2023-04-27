@@ -235,57 +235,66 @@ function checkbox(appointment_id) {
 		});
 }
 
-function createAppointment(title, location, description, duration, voting_end_date) {
+function createAppointment(
+	title,
+	location,
+	description,
+	duration,
+	voting_end_date
+) {
 	const appointmentInfo = {
-	  title: title,
-	  location: location,
-	  description: description,
-	  duration: duration,
-	  voting_end_date: voting_end_date
+		title: title,
+		location: location,
+		description: description,
+		duration: duration,
+		voting_end_date: voting_end_date,
 	};
 	$.ajax({
-	  url: "backend/serviceHandler.php",
-	  data: { method: "createAppointment", param: appointmentInfo},
-	  method: "POST",
-	  success: function(response) {
-		console.log('Termin erstellt');
-	  },
-	  error: function(xhr, status, error) {
-		console.error('Fehler beim erstellen des Termins');
-	  }
+		url: "backend/serviceHandler.php",
+		data: { method: "createAppointment", param: appointmentInfo },
+		method: "POST",
+		success: function (response) {
+			console.log("Termin erstellt");
+		},
+		error: function (xhr, status, error) {
+			console.error("Fehler beim erstellen des Termins");
+		},
 	});
-  }
+}
+
 function insertVotes(id) {
-	$("#insertVotesButton").off("click").on("click", function () {
-		// Code, der ausgeführt wird, wenn der Button geklickt wird
-		for (let count = 0; count <= 1; count++) {
-			switch (count) {
-				case 0:
-					var methodeTyp = "insertParticipant";
-					var comment = $("#kommentar").val();
-					var participentName = $("#currentUserName").text();
-					var data = {
-						appointment_id: id,
-						username: participentName,
-						comment: comment,
-					};
-					console.log(data)
-					break;
-				case 1:
-					var methodeTyp = "insertAppointmentParticipant";
-					break;
-				default:
-					break;
+	$("#insertVotesButton")
+		.off("click")
+		.on("click", function () {
+			// Code, der ausgeführt wird, wenn der Button geklickt wird
+			for (let count = 0; count <= 1; count++) {
+				switch (count) {
+					case 0:
+						var methodeTyp = "insertParticipant";
+						var comment = $("#kommentar").val();
+						var participentName = $("#currentUserName").text();
+						var data = {
+							appointment_id: id,
+							username: participentName,
+							comment: comment,
+						};
+						console.log(data);
+						break;
+					case 1:
+						var methodeTyp = "insertAppointmentParticipant";
+						break;
+					default:
+						break;
+				}
+				$.ajax({
+					url: "../backend/serviceHandler.php",
+					data: { method: methodeTyp, param: data },
+					method: "POST",
+					success: function (response) {},
+					error: function (jqXHR, textStatus, errorThrown) {
+						console.log("Fehler: " + jqXHR.responseText);
+					},
+				});
 			}
-			$.ajax({
-				url: "../backend/serviceHandler.php",
-				data: { method: methodeTyp, param: data },
-				method: 'POST',
-				success: function (response) {},
-				error: function (jqXHR, textStatus, errorThrown) {
-					console.log("Fehler: " + jqXHR.responseText);
-				},
-			});
-		}
-	});
+		});
 }
