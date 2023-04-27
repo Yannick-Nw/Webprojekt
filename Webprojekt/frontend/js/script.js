@@ -262,7 +262,7 @@ function createAppointment(
 		},
 	});
 }
-
+/*
 function insertVotes(id) {
 	$("#insertVotesButton")
 		.off("click")
@@ -298,7 +298,7 @@ function insertVotes(id) {
 								var date_id = response[0][date];
 								let checkboxName = "checkbox" + date;
 								let checkboxStatus = $(checkboxName).val();
-								var data = {appointment_id: , participant_id: , date_id: date_id, vote: checkboxStatus};
+								var data = {appointment_id: id, participant_id: , date_id: date_id, vote: checkboxStatus};
 								$.ajax({
 									url: "../backend/serviceHandler.php",
 									data: { method: "insertAppointmentParticipant", param: data },
@@ -324,7 +324,7 @@ function insertVotes(id) {
 				});
 			}
 		});
-}
+}*/
 
 
 function createAppointmentSP () {
