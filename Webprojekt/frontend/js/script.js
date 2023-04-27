@@ -215,7 +215,6 @@ function checkbox(){
 		}
 	});
 }
-*/
 
 function createAppointment(title, location, description, duration, voting_end_date) {
 	const appointmentInfo = {
