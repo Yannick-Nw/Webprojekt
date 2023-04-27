@@ -236,7 +236,7 @@ function checkbox(appointment_id) {
 		});
 }
 
-function createAppointment(
+/*function createAppointment(
 	title,
 	location,
 	description,
@@ -261,7 +261,8 @@ function createAppointment(
 			console.error("Fehler beim erstellen des Termins");
 		},
 	});
-}
+}*/
+
 /*
 function insertVotes(id) {
 	$("#insertVotesButton")
