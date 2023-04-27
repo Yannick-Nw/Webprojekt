@@ -1,8 +1,9 @@
 $(document).ready(function () {
-	loaddata("main");
+	loaddata();
 
 	$("#cancelDetails").click(function () {
 		$("#appointmentDetails").hide();
+		emptyTable();
 		$("#allAppointments").show();
 	});
 	$("#create").click(function () {
@@ -15,29 +16,12 @@ $(document).ready(function () {
 	});
 });
 
-function loaddata(requestTyp) {
-	$.when(
-		$.ajax({
-			url: "../backend/serviceHandler.php",
-			data: { method: "queryAppointments", param: choice },
-			dataType: "json"
-		}),
-		$.ajax({
-			url: "../backend/serviceHandler.php",
-			data: { method: "queryDates", param: choice },
-			dataType: "json"
-		}),
-		$.ajax({
-			url: "../backend/serviceHandler.php",
-			data: { method: "queryParticipants", param: choice },
-			dataType: "json"
-		}),
-		$.ajax({
-			url: "../backend/serviceHandler.php",
-			data: { method: "queryAppointmentParticipants", param: choice },
-			dataType: "json"
-		})
-	).done(function (response) {
+function loaddata() {
+	$.ajax({
+		url: "../backend/serviceHandler.php",
+		data: { method: "queryAppointments" },
+		dataType: "json",
+		success: function (response) {
 			console.log(response);
 			for (var i = 0; i < response.length; i++) {
 				var appointmentObjekt = response[i];
@@ -90,25 +74,45 @@ function loaddata(requestTyp) {
 }
 
 function appointmentChoice(choice) {
-	$.ajax({
-		url: "../backend/serviceHandler.php",
-		data: { method: "queryDates", param: choice },
-		dataType: "json",
-		success: function (response) {
-			console.log(response);
-			var participentOld = "0";
-			var dateOld = "";
-			for (var i = 0; i < response.length; i++) {
-				var appointmentObjekt = response[i];
-				if ("title" in appointmentObjekt) {
-					var name = appointmentObjekt.title;
+	$.when(
+		$.ajax({
+			url: "../backend/serviceHandler.php",
+			data: { method: "queryAppointments", param: choice },
+			dataType: "json",
+		}),
+		$.ajax({
+			url: "../backend/serviceHandler.php",
+			data: { method: "queryDates", param: choice },
+			dataType: "json",
+		}),
+		$.ajax({
+			url: "../backend/serviceHandler.php",
+			data: { method: "queryParticipants", param: choice },
+			dataType: "json",
+		}),
+		$.ajax({
+			url: "../backend/serviceHandler.php",
+			data: { method: "queryAppointmentParticipants", param: choice },
+			dataType: "json",
+		})
+	)
+		.done(function (response1, response2, response3, response4) {
+			console.log(response1);
+			for (var i = 0; i < response1[0].length; i++) {
+				let appointmentObjekt = response1[0][i];
+				//console.log(appointmentObjekt);
+				//if ("title" in appointmentObjekt) {
+					let name = appointmentObjekt.title;
 					$("#appointmentDetailsName").text(name);
-					var description = appointmentObjekt.description;
+					let description = appointmentObjekt.description;
 					$("#appointmentDetailsDescription").text(description);
-				}
-
-				if ("date" in appointmentObjekt) {
-					var date = appointmentObjekt.date;
+				//}
+			}
+			var dateOld = "";
+			for (var i = 0; i < response2[0].length; i++) {
+				var appointmentObjekt = response2[0][i];
+				//if ("date" in appointmentObjekt) {
+					var date = new Date(appointmentObjekt.date).toString("dd.MM.yyyy");;
 					var trDate = $("#appointmentDates"); // Zugriff auf das Zeile-Element
 					console.log(date, dateOld);
 					if (dateOld !== date) {
@@ -121,39 +125,58 @@ function appointmentChoice(choice) {
 						$(i - cellCount).attr("colspan", multiCell);
 						multiCell = multiCell + 1;
 					}
-				}
-
-				if ("time" in appointmentObjekt) {
-					var time = appointmentObjekt.time;
+				//}
+			}
+			for (var i = 0; i < response2[0].length; i++) {
+				var appointmentObjekt = response2[0][i];
+				//console.log(appointmentObjekt);
+				//if ("time" in appointmentObjekt) {
+					var time = Date.parse(appointmentObjekt.time);
+					var timeAdd = time;
 					var trDate = $("#appointmentTimes"); // Zugriff auf das Zeile-Element
-					var tdTime = $("<td></td>").text(time); // Erstellen und Hinzufügen von Zellen zur Zeile
+					var tdTime = $("<td></td>").text(time.toString("HH:mm") + "-" + timeAdd.addMinutes(response1[0][0].duration).toString("HH:mm")); // Erstellen und Hinzufügen von Zellen zur Zeile
 					trDate.append(tdTime);
-				}
-
-				if ("username" in appointmentObjekt) {
-					var participent = appointmentObjekt.username;
-					var selected = appointmentObjekt.vote;
+				//}
+			}
+			let participentOld = "0";
+			//console.log(response3[0]);
+			for (var i = 0; i < response3[0].length; i++) {
+				let appointmentObjekt = response3[0][i];
+				//console.log(appointmentObjekt.username);
+				//if ("username" in appointmentObjekt) {
+					let participent = appointmentObjekt.username;
 					var tbodyDetails = $("#particpantsPicks");
 					var trParticpants = $("<tr></tr>").addClass("h-12"); // Erstellen einer neuen Zeile
-					if (participentOld === participent) {
+					//if (participentOld === participent) {
 						var tdParticpants = $("<td></td>").text(participent); // Erstellen und Hinzufügen von Zellen zur Zeile
 						trParticpants.append(tdParticpants);
 						participentOld = participent;
+					//}
+					//console.log(response4[0]);
+					for (let votes_person = 0; votes_person < response4[0].length; votes_person++) {
+						let appointmentVotes = response4[0][votes_person];
+						if (appointmentVotes.participant_id == appointmentObjekt.id) {
+							let selected = appointmentVotes.vote;
+							if (selected == "1") {
+								let tdParticpants = $("<td></td>").html("&#x2705;"); // Erstellen und Hinzufügen von Zellen zur Zeile
+								trParticpants.append(tdParticpants);
+								tbodyDetails.append(trParticpants);
+							} else if (selected == "0") {
+								var tdParticpants = $("<td></td>").html("&#x274C;"); // Erstellen und Hinzufügen von Zellen zur Zeile
+								trParticpants.append(tdParticpants);
+								tbodyDetails.append(trParticpants);
+							}
+						}
 					}
-					if (selected === "1") {
-						tdParticpants = $("<td></td>").text("&#x2705;"); // Erstellen und Hinzufügen von Zellen zur Zeile
-						trParticpants.append(tdParticpants);
-						tbodyDetails.append(trParticpants);
-					} else if (selected === "0") {
-						var tdParticpants = $("<td></td>").text("&#x274C;"); // Erstellen und Hinzufügen von Zellen zur Zeile
-						trParticpants.append(tdParticpants);
-						tbodyDetails.append(trParticpants);
-					}
-				}
+				//}
 			}
-		},
-		error: function (jqXHR, textStatus, errorThrown) {
-			console.log("Fehler: " + jqXHR.responseText);
-		},
-	});
+		})
+		.fail(function (jqXHR, textStatus, errorThrown) {
+			console.log("Fehler: " + jqXHR.responseText + " : " + errorThrown);
+		});
+}
+
+function emptyTable() {
+	$("#detailsTable td").remove();
+	$("#particpantsPicks tr").remove();
 }
