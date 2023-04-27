@@ -146,11 +146,11 @@ class DataHandler
     {
         // Bereite die Abfrage vor
         $stmt = $this->conn->prepare(
-            "INSERT INTO appointment_participants (appointment_id, participant_id, date_id, vote) VALUES (?, ?, ?)"
+            "INSERT INTO appointment_participants (appointment_id, participant_id, date_id, vote) VALUES (?, ?, ?, ?)"
         );
         // Binde die Werte an die Abfrage
         $stmt->bind_param(
-            "iii",
+            "iiii",
             $data["appointment_id"],
             $data["participant_id"],
             $data["date_id"],
@@ -160,6 +160,7 @@ class DataHandler
         $result = $stmt->execute();
         // Schließe die Abfrage
         $stmt->close();
+        return $result;
     }
 
     public function queryDates($appointment_id)
@@ -263,7 +264,8 @@ class DataHandler
         // Ausführen der SQL-Abfrage
         
         $stmt->execute();
-        return true;
+        $lastInsertId = $this->conn->insert_id;
+        return $lastInsertId;
     }
 
     // Schließen der Datenbankverbindung am Ende des Skripts
