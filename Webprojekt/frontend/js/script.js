@@ -298,3 +298,86 @@ function insertVotes(id) {
 			}
 		});
 }
+
+
+<script>
+        // Counter for the number of options
+        var optionCount = 0;
+
+        // Handle button click
+        $('#add-option-button').click(function() {
+            // Increment the option count
+            optionCount++;
+            // Create a new option element
+            var newOption = $(
+                '<div>' +
+                    '<label class="block font-bold mb-1">Terminvorschlag ' + optionCount + ':</label>' +
+                    '<input type="checkbox" name="options" value="option' + optionCount + '">' +
+                    '<label for="option' + optionCount + '-date-and-time" class="block font-bold mb-1">Date and Time:</label>' +
+                    '<input type="datetime-local" class="w-full border rounded p-2" id="option' + optionCount + '-date-and-time" name="option' + optionCount + '-date-and-time">' +
+                '</div>'
+            );
+            // Add the new option element to the options container
+            $('#options-container').append(newOption);
+        });
+
+        // Load existing appointments when the page loads
+        $(document).ready(function() {
+            loadAppointments();
+        });
+
+        // Handle form submission
+        $('#create-appointment-form').submit(function(event) {
+            event.preventDefault();
+            createAppointment();
+        });
+
+        // Load existing appointments from the server
+        function loadAppointments() {
+            $.ajax({
+                url: "backend/serviceHandler.php",
+                data: { method: "getAppointments" },
+                method: "GET",
+                success: function(response) {
+                    // Clear the appointment list
+                    $('#appointment-list').empty();
+                    // Add each appointment to the list
+                    response.forEach(function(appointment) {
+                        $('#appointment-list').append(
+                            '<li class="bg-white p-4 rounded shadow">' +
+                                '<h3 class="text-lg font-bold">' + appointment.title + '</h3>' +
+                                '<p>' + appointment.location + '</p>' +
+                                '<p>' + appointment.description + '</p>' +
+                            '</li>'
+                        );
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Fehler beim Laden der Termine');
+                }
+            });
+        }
+
+        // Create a new appointment on the server
+        function createAppointment() {
+            // Get the form data
+            var formData = $('#create-appointment-form').serializeArray().reduce(function(obj, item) {
+                obj[item.name] = item.value;
+                return obj;
+            }, {});
+            // Send the data to the server
+            $.ajax({
+                url: "backend/serviceHandler.php",
+                data: { method: "createAppointment", param: formData },
+                method: "POST",
+                success: function(response) {
+                    console.log('Termin erstellt');
+                    // Reload the appointments
+                    loadAppointments();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Fehler beim Erstellen des Termins');
+                }
+            });
+        }
+    </script>
