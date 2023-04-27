@@ -65,6 +65,7 @@ class DataHandler
 
     public function createAppointment($appointmentData)
     {
+        
         // Erstelle ein Array mit den Schlüsseln der Termin-Daten
         $keys = array_keys($appointmentData);
         // Erstelle ein Array mit den Werten der Termin-Daten
@@ -95,6 +96,44 @@ class DataHandler
         $stmt->bind_param($types, ...$values);
         $stmt->execute();
     }
+
+    /*function createAppointment($appointmentData)
+{
+    // Erstelle ein Array mit den Schlüsseln der Termin-Daten
+    $keys = array_keys($appointmentData);
+    // Erstelle ein Array mit den Werten der Termin-Daten
+    $values = array_values($appointmentData);
+
+    // Erstelle einen String mit den Schlüsseln, getrennt durch Kommas
+    $keysStr = implode(",", $keys);
+    // Erstelle einen String mit Platzhaltern für die Werte
+    $placeholders = implode(",", array_fill(0, count($values), "?"));
+
+    // Erstelle die SQL-Abfrage mit den Schlüsseln und Platzhaltern
+    $query = "INSERT INTO appointments ($keysStr) VALUES ($placeholders)";
+
+    // Bereite die Abfrage vor
+    $stmt = $this->conn->prepare($query);
+
+    // Erstelle den Typ-Parameter dynamisch basierend auf den Datentypen der Werte
+    $types = "";
+    foreach ($values as $value) {
+        if (is_int($value)) {
+            $types .= "i";
+        } else {
+            $types .= "s";
+        }
+    }
+
+    // Binde die Werte an die Abfrage und führe sie aus
+    $stmt->bind_param($types, ...$values);
+    
+    if ($stmt->execute()) {
+        echo "Appointment created successfully.";
+    } else {
+        echo "Error creating appointment: " . mysqli_error($conn);
+    }
+} */
 
     public function deleteAppointment($id)
     {

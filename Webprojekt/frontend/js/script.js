@@ -211,3 +211,24 @@ function insertVotes(count, id) {
 	});
 }
 */
+
+function createAppointment(title, location, description, duration, voting_end_date) {
+	const appointmentInfo = {
+		title: title,
+		location: location,
+		description: description,
+		duration: duration,
+		voting_end_date: voting_end_date
+	};
+	$.ajax({
+	  url: "backend/serviceHandler.php",
+	  data: { method: "createAppointment", param: appointmentInfo},
+	  method: "POST",
+	  success: function(response) {
+		console.log('Termin erstellt');
+	  },
+	  error: function(xhr, status, error) {
+		console.error('Fehler beim erstellen des Termins');
+	  }
+	});
+}
