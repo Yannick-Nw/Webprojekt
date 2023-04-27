@@ -218,11 +218,11 @@ function checkbox(){
 
 function createAppointment(title, location, description, duration, voting_end_date) {
 	const appointmentInfo = {
-		title: title,
-		location: location,
-		description: description,
-		duration: duration,
-		voting_end_date: voting_end_date
+	  title: title,
+	  location: location,
+	  description: description,
+	  duration: duration,
+	  voting_end_date: voting_end_date
 	};
 	$.ajax({
 	  url: "backend/serviceHandler.php",
@@ -235,4 +235,4 @@ function createAppointment(title, location, description, duration, voting_end_da
 		console.error('Fehler beim erstellen des Termins');
 	  }
 	});
-}
+  }
