@@ -9,6 +9,7 @@ $(document).ready(function () {
 	});
 	$("#create").click(function () {
 		$("#allAppointments").hide();
+		createAppointmentSP();
 		$("#createAppointment").show();
 	});
 	$("#cancelCreate").click(function () {
@@ -300,7 +301,7 @@ function insertVotes(id) {
 }
 
 
-<script>
+function createAppointmentSP () {
         // Counter for the number of options
         var optionCount = 0;
 
@@ -380,4 +381,4 @@ function insertVotes(id) {
                 }
             });
         }
-    </script>
+	}
