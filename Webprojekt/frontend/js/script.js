@@ -263,74 +263,81 @@ function checkbox(appointment_id) {
 	});
 }*/
 
-/*
-function insertVotes(id) {
+function insertVotes(appointment_id) {
 	$("#insertVotesButton")
 		.off("click")
 		.on("click", function () {
 			// Code, der ausgeführt wird, wenn der Button geklickt wird
-			for (let count = 0; count <= 1; count++) {
-				switch (count) {
-					case 0:
-						var methodeTyp = "insertParticipant";
-						var comment = $("#kommentar").val();
-						var participentName = $("#currentUserName").text();
-						var data = {
-							appointment_id: id,
-							username: participentName,
-							comment: comment,
-						};
-						console.log(data);
-						break;
-					case 1:
-						var methodeTyp = "queryDates";
-						break;
-					default:
-						break;
-				}
-				$.ajax({
-					url: "../backend/serviceHandler.php",
-					data: { method: methodeTyp, param: id },
-					method: "GET",
-					success: function (response) {
-						if (methodeTyp === "queryDates") {
+			var user_id = 0;
+			var methodeTyp = "insertParticipant";
+			var comment = $("#kommentar").val();
+			var participentName = $("#currentUserName").text();
+			var data = {
+				appointment_id: appointment_id,
+				username: participentName,
+				comment: comment,
+			};
+			//console.log(data);
+			$.ajax({
+				url: "../backend/serviceHandler.php",
+				data: { method: methodeTyp, param: data },
+				method: "GET",
+				success: function (response) {
+					//console.log(response);
+					user_id = response;
+					var methodeTyp = "queryDates";
+					var data = appointment_id;
+					//console.log(user_id);
+					$.ajax({
+						url: "../backend/serviceHandler.php",
+						data: { method: methodeTyp, param: data },
+						method: "GET",
+						success: function (response) {
 							console.log(response);
-							for (let date = 0; date < response[0].length; date++) {
-								var date_id = response[0][date];
-								let checkboxName = "checkbox" + date;
-								let checkboxStatus = $(checkboxName).val();
-								var data = {appointment_id: id, participant_id: , date_id: date_id, vote: checkboxStatus};
+							for (let date = 0; date < response.length; date++) {
+								var date_id = response[date].id;
+								let checkboxName = "#checkbox" + date;
+								let isChecked = $(checkboxName).prop("checked");
+								var checkboxValue = isChecked ? 1 : 0;
+								//console.log(checkboxValue);
+								var data = {
+									appointment_id: appointment_id,
+									participant_id: user_id,
+									date_id: date_id,
+									vote: checkboxValue,
+								};
+								console.log(data);
 								$.ajax({
 									url: "../backend/serviceHandler.php",
 									data: { method: "insertAppointmentParticipant", param: data },
 									method: "GET",
 									success: function (response) {
-										if (methodeTyp === "queryDates") {
-											console.log(response);
-											for (let date = 0; date < response[0].length; date++) {
-												var dates = response[0][date];
-											}
-										}
+										console.log(response);
+										/*for (let date = 0; date < response[0].length; date++) {
+											var dates = response[0][date];
+										}*/
 									},
 									error: function (jqXHR, textStatus, errorThrown) {
 										console.log("Fehler: " + jqXHR.responseText);
 									},
 								});
 							}
-						}
-					},
-					error: function (jqXHR, textStatus, errorThrown) {
-						console.log("Fehler: " + jqXHR.responseText);
-					},
-				});
-			}
+						},
+						error: function (jqXHR, textStatus, errorThrown) {
+							console.log("Fehler: " + jqXHR.responseText);
+						},
+					});
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.log("Fehler: " + jqXHR.responseText);
+				},
+			});
 		});
-}*/
+}
 
-
-function createAppointmentSP () {
-        // Counter for the number of options
-        var optionCount = 0;
+function createAppointmentSP() {
+	// Counter for the number of options
+	var optionCount = 0;
 
         // Handle button click
         $('#add-option-button').click(function() {
@@ -348,63 +355,71 @@ function createAppointmentSP () {
             $('#options-container').append(newOption);
         });
 
-        // Load existing appointments when the page loads
-        $(document).ready(function() {
-            loadAppointments();
-        });
+	// Load existing appointments when the page loads
+	$(document).ready(function () {
+		loadAppointments();
+	});
 
-        // Handle form submission
-        $('#create-appointment-form').submit(function(event) {
-            event.preventDefault();
-            createAppointment();
-        });
+	// Handle form submission
+	$("#create-appointment-form").submit(function (event) {
+		event.preventDefault();
+		createAppointment();
+	});
 
-        // Load existing appointments from the server
-        function loadAppointments() {
-            $.ajax({
-                url: "backend/serviceHandler.php",
-                data: { method: "getAppointments" },
-                method: "GET",
-                success: function(response) {
-                    // Clear the appointment list
-                    $('#appointment-list').empty();
-                    // Add each appointment to the list
-                    response.forEach(function(appointment) {
-                        $('#appointment-list').append(
-                            '<li class="bg-white p-4 rounded shadow">' +
-                                '<h3 class="text-lg font-bold">' + appointment.title + '</h3>' +
-                                '<p>' + appointment.location + '</p>' +
-                                '<p>' + appointment.description + '</p>' +
-                            '</li>'
-                        );
-                    });
-                },
-                error: function(xhr, status, error) {
-                    console.error('Fehler beim Laden der Termine');
-                }
-            });
-        }
-
-        // Create a new appointment on the server
-        function createAppointment() {
-            // Get the form data
-            var formData = $('#create-appointment-form').serializeArray().reduce(function(obj, item) {
-                obj[item.name] = item.value;
-                return obj;
-            }, {});
-            // Send the data to the server
-            $.ajax({
-                url: "backend/serviceHandler.php",
-                data: { method: "createAppointment", param: formData },
-                method: "POST",
-                success: function(response) {
-                    console.log('Termin erstellt');
-                    // Reload the appointments
-                    loadAppointments();
-                },
-                error: function(xhr, status, error) {
-                    console.error('Fehler beim Erstellen des Termins');
-                }
-            });
-        }
+	// Load existing appointments from the server
+	function loadAppointments() {
+		$.ajax({
+			url: "backend/serviceHandler.php",
+			data: { method: "getAppointments" },
+			method: "GET",
+			success: function (response) {
+				// Clear the appointment list
+				$("#appointment-list").empty();
+				// Add each appointment to the list
+				response.forEach(function (appointment) {
+					$("#appointment-list").append(
+						'<li class="bg-white p-4 rounded shadow">' +
+							'<h3 class="text-lg font-bold">' +
+							appointment.title +
+							"</h3>" +
+							"<p>" +
+							appointment.location +
+							"</p>" +
+							"<p>" +
+							appointment.description +
+							"</p>" +
+							"</li>"
+					);
+				});
+			},
+			error: function (xhr, status, error) {
+				console.error("Fehler beim Laden der Termine");
+			},
+		});
 	}
+
+	// Create a new appointment on the server
+	function createAppointment() {
+		// Get the form data
+		var formData = $("#create-appointment-form")
+			.serializeArray()
+			.reduce(function (obj, item) {
+				obj[item.name] = item.value;
+				return obj;
+			}, {});
+		// Send the data to the server
+		$.ajax({
+			url: "backend/serviceHandler.php",
+			data: { method: "createAppointment", param: formData },
+			method: "POST",
+			success: function (response) {
+				console.log("Termin erstellt");
+				// Reload the appointments
+				loadAppointments();
+			},
+			error: function (xhr, status, error) {
+				console.error("Fehler beim Erstellen des Termins");
+			},
+		});
+	}
+}
