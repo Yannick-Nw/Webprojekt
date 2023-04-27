@@ -45,13 +45,13 @@ function loaddata() {
 				var td1 = $("<td></td>").text(title); // Erstellen und Hinzufügen von Zellen zur Zeile
 				tr.append(td1);
 
-				var td2 = $("<td></td>").addClass("max-md:hidden").text(location);
+				var td2 = $("<td></td>").addClass("").text(location);
 				tr.append(td2);
 
-				var td3 = $("<td></td>").addClass("max-md:hidden").text(duration);
+				var td3 = $("<td></td>").addClass("").text(duration);
 				tr.append(td3);
 
-				var td4 = $("<td></td>").addClass("max-md:hidden").text(end_time);
+				var td4 = $("<td></td>").addClass("").text(end_time);
 				tr.append(td4);
 
 				var td5 = $("<td></td>").text(status);
