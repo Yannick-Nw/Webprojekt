@@ -14,6 +14,7 @@ $(document).ready(function () {
 	});
 	$("#cancelCreate").click(function () {
 		$("#createAppointment").hide();
+		$("#options-container").empty();
 		$("#allAppointments").show();
 	});
 });
@@ -226,7 +227,12 @@ function deleteAppointment(id) {
 		method: "GET",
 		success: function (response) {
 			console.log(response);
-			location.reload();
+			$("#appointmentDetails").hide();
+			$("#tableRows").empty();
+			loaddata();
+			$("#allAppointments").show();
+			$("#detailsTable td").remove();
+			$("#particpantsPicks tr").remove();
 		},
 		error: function (jqXHR, textStatus, errorThrown) {
 			console.log("Fehler: " + jqXHR.responseText);
@@ -234,7 +240,7 @@ function deleteAppointment(id) {
 	});
 }
 
-function createAppointment() {
+function createAppointment(optionCount) {
 	let title = $("#titleNewAppointment").val();
 	let location = $("#locationNewAppointment").val();
 	let description = $("#descriptionNewAppointment").val();
@@ -254,7 +260,29 @@ function createAppointment() {
 		data: { method: "createAppointment", param: appointmentInfo },
 		method: "GET",
 		success: function (response) {
-			console.log("Termin erstellt");
+			console.log(response);
+			for (let i = 0; i < optionCount; i++) {
+				//const element = array[index];
+				let optionId = "#optionNewAppointment";
+				let option = optionId + optionCount;
+				var datetimeval = $(option).val();
+				var date = datetimeval.split("T")[0];
+				var time = datetimeval.split("T")[1];
+				const appointmentInfo = {
+					date: date,
+					time: time,
+				};
+				console(appointmentInfo);
+				$.ajax({
+					url: "../backend/serviceHandler.php",
+					data: { method: "insertDate", param: appointmentInfo },
+					method: "POST",
+					success: function (response) {},
+					error: function (xhr, status, error) {
+						console.error("Fehler beim erstellen des Termins");
+					},
+				});
+			}
 			$("#createAppointment").hide();
 			$("#tableRows").empty();
 			loaddata();
@@ -345,19 +373,19 @@ function insertVotes(appointment_id) {
 
 function createAppointmentSP() {
 	// Counter for the number of options
-	var optionCount = 0;
+	let optionCount = 0;
 
 	// Handle button click
-	$("#add-option-button").click(function () {
+	$("#add-option-button").off("click").on("click", function () {
 		// Increment the option count
 		optionCount++;
 		// Create a new option element
-		var newOption = $("<div>" + '<label class="block font-bold mb-1">Terminvorschlag ' + optionCount + ":</label>" + '<label for="option' + optionCount + '-date-and-time" class="block font-bold mb-1">Date and Time:</label>' + '<input type="datetime-local" class="w-full border rounded p-2" id="option' + optionCount + '-date-and-time" name="option' + optionCount + '-date-and-time">' + "</div>");
+		var newOption = $("<div>" + '<label class="block font-bold mb-1">Terminvorschlag ' + optionCount + ":</label>" + '<label for="option' + optionCount + '-date-and-time" class="block font-bold mb-1">Date and Time:</label>' + '<input type="datetime-local" id="optionNewAppointment' + optionCount + '" class="w-full border rounded p-2" id="option' + optionCount + '-date-and-time" name="option' + optionCount + '-date-and-time">' + "</div>");
 		// Add the new option element to the options container
 		$("#options-container").append(newOption);
 	});
 	$("#createNewAppointment").click(function () {
-		createAppointment();
+		createAppointment(optionCount);
 	});
 
 	// Load existing appointments when the page loads

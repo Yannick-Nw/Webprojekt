@@ -94,9 +94,10 @@ class DataHandler
         // Binde die Werte an die Abfrage und führe sie aus
         $stmt->bind_param($types, ...$values);
 
-        return $stmt->execute();
-        //$lastInsertId = $this->conn->insert_id;
-        //return $lastInsertId;
+        //return 
+        $stmt->execute();
+        $lastInsertId = $this->conn->insert_id;
+        return $lastInsertId;
     }
 
     public function deleteAppointment($id)

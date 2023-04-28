@@ -6,6 +6,7 @@ $method = ""; // Initialisieren der Methode
 
 isset($_GET["method"]) ? $method = $_GET["method"] : false; // Überprüfen, ob die Methode gesetzt ist
 isset($_GET["param"]) ? $param = $_GET["param"] : false; // Überprüfen, ob der Parameter gesetzt ist
+isset($_POST["param"]) ? $param = $_POST["param"] : false; // Überprüfen, ob der Parameter gesetzt ist
 
 $logic = new SimpleLogic(); // Erstellen einer Instanz der SimpleLogic-Klasse
 $result = $logic->handleRequest($method, $param); // Aufrufen der handleRequest-Methode
