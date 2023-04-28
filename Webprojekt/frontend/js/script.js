@@ -207,7 +207,8 @@ function appointmentChoice(choice) {
 		// Wenn der "deleteAppointment"-Button geklickt wird, wird die Funktion "deleteAppointment" aufgerufen und der Parameter "choice" übergeben
 		$("#deleteAppointment").click(function () {
 			deleteAppointment(choice);
-		});		
+		});
+	}
 
 // Funktion zum Erstellen der Checkbox für die Teilnehmerstimmen
 function checkbox(appointment_id) {
@@ -485,5 +486,4 @@ function createAppointmentSP() {
 		});
 	}
 	*/
-}
 }
