@@ -200,8 +200,11 @@ class DataHandler
         return $dates;
     }
 
-    public function insertDate(array $data)
+    public function insertDate($data)
     {
+        error_log("Data: " . print_r($data, true));
+        var_dump($data);
+
         // SQL-Anweisung vorbereiten
         $stmt = $this->conn->prepare(
             "INSERT INTO dates (appointment_id, date, time) VALUES (?, ?, ?)"
@@ -215,8 +218,12 @@ class DataHandler
         );
         // Anweisung ausführen
         $result = $stmt->execute();
+        error_log("Result: " . print_r($result, true));
+        var_dump($result);
+
         // Anweisung schließen
         $stmt->close();
+        return $result;
     }
 
     public function queryParticipants($appointment_id)

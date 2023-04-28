@@ -170,11 +170,11 @@ function appointmentChoice(choice) {
 		
 			// Wenn der Teilnehmer nicht derselbe ist wie der vorherige Teilnehmer, 
 			// fügen Sie eine neue Zeile mit dem Namen des Teilnehmers hinzu
-			if (participentOld !== participent) {
+			//if (participentOld !== participent) {
 				var tdParticpants = $("<td></td>").text(participent); // Erstellen und Hinzufügen von Zellen zur Zeile
 				trParticpants.append(tdParticpants);
 				participentOld = participent;
-			}
+			//}
 		
 			// Schleife durchläuft alle Objekte in response4
 			for (let votes_person = 0; votes_person < response4[0].length; votes_person++) {
@@ -299,20 +299,20 @@ function createAppointment(optionCount) {
 				let option = optionId + optionCount;
 				var datetimeval = $(option).val();
 				var date = datetimeval.split("T")[0];
-				var time = datetimeval.split("T")[1];
-				const appointmentInfo = { 	// Speichere das Datum und die Uhrzeit in einem weiteren Objekt
-
+				var time = datetimeval.split("T")[1] + ":00";
+				const dateInfo = {
+					appointment_id: response,
 					date: date,
 					time: time,
 				};
-				console(appointmentInfo);
-				$.ajax({ 	// Sende ein weiteres AJAX-Request zum Backend, um den neuen Terminvorschlag anzulegen
+				console.log(dateInfo);
+				$.ajax({
 					url: "../backend/serviceHandler.php",
-					data: { method: "insertDate", param: appointmentInfo },
-					method: "POST",
+					data: { method: "insertDate", param: dateInfo },
+					method: "GET",
 					success: function (response) {},
 					error: function (xhr, status, error) {
-						console.error("Fehler beim erstellen des Termins");
+						console.error("Fehler beim erstellen der Optionen");
 					},
 				});
 			}
@@ -320,6 +320,7 @@ function createAppointment(optionCount) {
 			$("#tableRows").empty();
 			loaddata();
 			$("#allAppointments").show();
+			$("#options-container").empty();
 			$("#titleNewAppointment").val("");
 			$("#locationNewAppointment").val("");
 			$("#descriptionNewAppointment").val("");
