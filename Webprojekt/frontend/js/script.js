@@ -38,9 +38,7 @@ function loaddata() {
 				console.log(appointmentObjekt);
 				var tbodyMain = $("#tableRows"); // Zugriff auf das tbody-Element
 
-				var tr = $("<tr></tr>")
-					.attr("id", id)
-					.addClass("h-12 hover:bg-amber-950/50"); // Erstellen einer neuen Zeile
+				var tr = $("<tr></tr>").attr("id", id).addClass("h-12 hover:bg-amber-950/50"); // Erstellen einer neuen Zeile
 
 				var td1 = $("<td></td>").text(title); // Erstellen und Hinzufügen von Zellen zur Zeile
 				tr.append(td1);
@@ -65,7 +63,7 @@ function loaddata() {
 				.click(function () {
 					$("#allAppointments").hide();
 					appointmentChoice($(this).attr("id"));
-					console.log($(this).attr("id"));
+					//console.log($(this).attr("id"));
 					$("#appointmentDetails").show();
 				});
 		},
@@ -106,12 +104,8 @@ function appointmentChoice(choice) {
 				//if ("title" in appointmentObjekt) {
 				let name = appointmentObjekt.title;
 				$("#appointmentDetailsName").text(name);
-				let description =
-					appointmentObjekt.description +
-					"<br>Abblaufdatum: " +
-					appointmentObjekt.voting_end_date;
-				description =
-					description + "<br>Dauer: " + appointmentObjekt.duration + " Minuten";
+				let description = appointmentObjekt.description + "<br>Abblaufdatum: " + appointmentObjekt.voting_end_date;
+				description = description + "<br>Dauer: " + appointmentObjekt.duration + " Minuten";
 				description = description + "<br>Ort: " + appointmentObjekt.location;
 				$("#appointmentDetailsDescription").html(description);
 				//}
@@ -142,11 +136,7 @@ function appointmentChoice(choice) {
 				var time = Date.parse(appointmentObjekt.time);
 				var timeAdd = time;
 				var trDate = $("#appointmentTimes"); // Zugriff auf das Zeile-Element
-				var tdTime = $("<td></td>").text(
-					time.toString("HH:mm") +
-						"-" +
-						timeAdd.addMinutes(response1[0][0].duration).toString("HH:mm")
-				); // Erstellen und Hinzufügen von Zellen zur Zeile
+				var tdTime = $("<td></td>").text(time.toString("HH:mm") + "-" + timeAdd.addMinutes(response1[0][0].duration).toString("HH:mm")); // Erstellen und Hinzufügen von Zellen zur Zeile
 				trDate.append(tdTime);
 				//}
 			}
@@ -165,11 +155,7 @@ function appointmentChoice(choice) {
 				participentOld = participent;
 				//}
 				//console.log(response4[0]);
-				for (
-					let votes_person = 0;
-					votes_person < response4[0].length;
-					votes_person++
-				) {
+				for (let votes_person = 0; votes_person < response4[0].length; votes_person++) {
 					let appointmentVotes = response4[0][votes_person];
 					if (appointmentVotes.participant_id == appointmentObjekt.id) {
 						let selected = appointmentVotes.vote;
@@ -184,6 +170,9 @@ function appointmentChoice(choice) {
 						}
 					}
 				}
+				$("#deleteAppointment").click(function () {
+					deleteAppointment(choice);
+				});
 				checkbox(choice);
 				//}
 			}
@@ -203,18 +192,12 @@ function checkbox(appointment_id) {
 				count = count + 1;
 				let tbodyDetails = $("#particpantsPicks");
 				let numTd = tbodyDetails.find("tr:last-child td").length;
-				let trParticpants = $("<tr></tr>")
-					.addClass("h-12 bg-amber-950/25")
-					.attr("id", "currentUserVotes");
-				let tdName = $("<td></td>")
-					.text(inputValue)
-					.attr("id", "currentUserName");
+				let trParticpants = $("<tr></tr>").addClass("h-12 bg-amber-950/25").attr("id", "currentUserVotes");
+				let tdName = $("<td></td>").text(inputValue).attr("id", "currentUserName");
 				trParticpants.append(tdName);
 
 				for (let i = 0; i < numTd - 1; i++) {
-					let checkbox = $("<td></td>").html(
-						'<input id="checkbox' + i + '" type="checkbox" class="h-4 w-4">'
-					);
+					let checkbox = $("<td></td>").html('<input id="checkbox' + i + '" type="checkbox" class="h-4 w-4">');
 					trParticpants.append(checkbox);
 				}
 
@@ -234,6 +217,21 @@ function checkbox(appointment_id) {
 				}
 			}
 		});
+}
+
+function deleteAppointment(id) {
+	$.ajax({
+		url: "../backend/serviceHandler.php",
+		data: { method: "deleteAppointment", param: id },
+		method: "GET",
+		success: function (response) {
+			console.log(response);
+			location.reload();
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+			console.log("Fehler: " + jqXHR.responseText);
+		},
+	});
 }
 
 /*function createAppointment(
@@ -339,21 +337,15 @@ function createAppointmentSP() {
 	// Counter for the number of options
 	var optionCount = 0;
 
-        // Handle button click
-        $('#add-option-button').click(function() {
-            // Increment the option count
-            optionCount++;
-            // Create a new option element
-            var newOption = $(
-                '<div>' +
-					'<label class="block font-bold mb-1">Terminvorschlag ' + optionCount + ':</label>' +
-					'<label for="option' + optionCount + '-date-and-time" class="block font-bold mb-1">Date and Time:</label>' +
-					'<input type="datetime-local" class="w-full border rounded p-2" id="option' + optionCount + '-date-and-time" name="option' + optionCount + '-date-and-time">' +
-				'</div>'
-            );
-            // Add the new option element to the options container
-            $('#options-container').append(newOption);
-        });
+	// Handle button click
+	$("#add-option-button").click(function () {
+		// Increment the option count
+		optionCount++;
+		// Create a new option element
+		var newOption = $("<div>" + '<label class="block font-bold mb-1">Terminvorschlag ' + optionCount + ":</label>" + '<label for="option' + optionCount + '-date-and-time" class="block font-bold mb-1">Date and Time:</label>' + '<input type="datetime-local" class="w-full border rounded p-2" id="option' + optionCount + '-date-and-time" name="option' + optionCount + '-date-and-time">' + "</div>");
+		// Add the new option element to the options container
+		$("#options-container").append(newOption);
+	});
 
 	// Load existing appointments when the page loads
 	$(document).ready(function () {
@@ -377,19 +369,7 @@ function createAppointmentSP() {
 				$("#appointment-list").empty();
 				// Add each appointment to the list
 				response.forEach(function (appointment) {
-					$("#appointment-list").append(
-						'<li class="bg-white p-4 rounded shadow">' +
-							'<h3 class="text-lg font-bold">' +
-							appointment.title +
-							"</h3>" +
-							"<p>" +
-							appointment.location +
-							"</p>" +
-							"<p>" +
-							appointment.description +
-							"</p>" +
-							"</li>"
-					);
+					$("#appointment-list").append('<li class="bg-white p-4 rounded shadow">' + '<h3 class="text-lg font-bold">' + appointment.title + "</h3>" + "<p>" + appointment.location + "</p>" + "<p>" + appointment.description + "</p>" + "</li>");
 				});
 			},
 			error: function (xhr, status, error) {

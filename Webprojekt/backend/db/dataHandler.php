@@ -105,6 +105,7 @@ class DataHandler
         $stmt->bind_param("i", $id);
         // Führe die Abfrage aus
         $stmt->execute();
+        return $stmt->execute();
     }
 
     public function queryAppointmentParticipants($appointment_id)
