@@ -170,9 +170,6 @@ function appointmentChoice(choice) {
 						}
 					}
 				}
-				$("#deleteAppointment").click(function () {
-					deleteAppointment(choice);
-				});
 				checkbox(choice);
 				//}
 			}
@@ -180,6 +177,9 @@ function appointmentChoice(choice) {
 		.fail(function (jqXHR, textStatus, errorThrown) {
 			console.log("Fehler: " + jqXHR.responseText + " : " + errorThrown);
 		});
+	$("#deleteAppointment").click(function () {
+		deleteAppointment(choice);
+	});
 }
 
 function checkbox(appointment_id) {
