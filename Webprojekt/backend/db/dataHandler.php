@@ -64,38 +64,40 @@ class DataHandler
     }
 
     function createAppointment($appointmentData)
-{
-    // Erstelle ein Array mit den Schlüsseln der Termin-Daten
-    $keys = array_keys($appointmentData);
-    // Erstelle ein Array mit den Werten der Termin-Daten
-    $values = array_values($appointmentData);
+    {
+        // Erstelle ein Array mit den Schlüsseln der Termin-Daten
+        $keys = array_keys($appointmentData);
+        // Erstelle ein Array mit den Werten der Termin-Daten
+        $values = array_values($appointmentData);
 
-    // Erstelle einen String mit den Schlüsseln, getrennt durch Kommas
-    $keysStr = implode(",", $keys);
-    // Erstelle einen String mit Platzhaltern für die Werte
-    $placeholders = implode(",", array_fill(0, count($values), "?"));
+        // Erstelle einen String mit den Schlüsseln, getrennt durch Kommas
+        $keysStr = implode(",", $keys);
+        // Erstelle einen String mit Platzhaltern für die Werte
+        $placeholders = implode(",", array_fill(0, count($values), "?"));
 
-    // Erstelle die SQL-Abfrage mit den Schlüsseln und Platzhaltern
-    $query = "INSERT INTO appointments ($keysStr) VALUES ($placeholders)";
+        // Erstelle die SQL-Abfrage mit den Schlüsseln und Platzhaltern
+        $query = "INSERT INTO appointments ($keysStr) VALUES ($placeholders)";
 
-    // Bereite die Abfrage vor
-    $stmt = $this->conn->prepare($query);
+        // Bereite die Abfrage vor
+        $stmt = $this->conn->prepare($query);
 
-    // Erstelle den Typ-Parameter dynamisch basierend auf den Datentypen der Werte
-    $types = "";
-    foreach ($values as $value) {
-        if (is_int($value)) {
-            $types .= "i";
-        } else {
-            $types .= "s";
+        // Erstelle den Typ-Parameter dynamisch basierend auf den Datentypen der Werte
+        $types = "";
+        foreach ($values as $value) {
+            if (is_int($value)) {
+                $types .= "i";
+            } else {
+                $types .= "s";
+            }
         }
-    }
 
-    // Binde die Werte an die Abfrage und führe sie aus
-    $stmt->bind_param($types, ...$values);
-    
-    return $stmt->execute();
-}
+        // Binde die Werte an die Abfrage und führe sie aus
+        $stmt->bind_param($types, ...$values);
+
+        return $stmt->execute();
+        //$lastInsertId = $this->conn->insert_id;
+        //return $lastInsertId;
+    }
 
     public function deleteAppointment($id)
     {
@@ -263,7 +265,7 @@ class DataHandler
             $data["comment"]
         );
         // Ausführen der SQL-Abfrage
-        
+
         $stmt->execute();
         $lastInsertId = $this->conn->insert_id;
         return $lastInsertId;

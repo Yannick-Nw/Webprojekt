@@ -68,29 +68,29 @@
 					<form id="create-appointment-form" class="space-y-4">
 						<div>
 							<label for="title" class="block font-bold mb-1">Title:</label>
-							<input type="text" class="w-full border rounded p-2" id="title" name="title" required />
+							<input type="text" class="w-full border rounded p-2" id="titleNewAppointment" name="title" required />
 						</div>
 						<div>
 							<label for="location" class="block font-bold mb-1">Location:</label>
-							<input type="text" class="w-full border rounded p-2" id="location" name="location" required />
+							<input type="text" class="w-full border rounded p-2" id="locationNewAppointment" name="location" required />
 						</div>
 						<div>
-							<label for="description" class="block font-bold mb-1">Description:</label>
-							<textarea class="w-full border rounded p-2" id="description" name="description"></textarea>
+							<label for="description" class="block font-bold mb-1">Beschreibung:</label>
+							<textarea class="w-full border rounded p-2" id="descriptionNewAppointment" name="description"></textarea>
 						</div>
 						<div>
-							<label for="duration" class="block font-bold mb-1">Duration in Minutes:</label>
-							<input type="number" class="w-full border rounded p-2" id="duration" name="duration" required />
+							<label for="duration" class="block font-bold mb-1">Dauer in Minuten:</label>
+							<input type="number" class="w-full border rounded p-2" id="durationNewAppointment" name="duration" required />
 						</div>
 						<div>
-							<label for="voting-end-date" class="block font-bold mb-1">Deadline for Voting:</label>
-							<input type="datetime-local" class="w-full border rounded p-2" id="voting-end-date" name="voting-end-date" required />
+							<label for="voting-end-date" class="block font-bold mb-1">Deadline für Voting:</label>
+							<input type="datetime-local" class="w-full border rounded p-2" id="voting-end-dateNewAppointment" name="voting-end-date" required />
 						</div>
 						<div id="options-container">
 							<span class="block font-bold mb-1">Appointment Options:</span>
 						</div>
 						<button type="button" id="add-option-button" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Terminvorschlag hinzufügen</button>
-						<button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Create Appointment</button>
+						<button type="button" id="createNewAppointment" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Create Appointment</button>
 					</form>
 				</div>
 			</div>

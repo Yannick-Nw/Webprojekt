@@ -24,7 +24,7 @@ function loaddata() {
 		data: { method: "queryAppointments" },
 		dataType: "json",
 		success: function (response) {
-			console.log(response);
+			//console.log(response);
 			for (var i = 0; i < response.length; i++) {
 				var appointmentObjekt = response[i];
 				var id = appointmentObjekt.id;
@@ -35,7 +35,7 @@ function loaddata() {
 				var end_time = end_time.toString("dd.MM.yyyy");
 				var status = appointmentObjekt.vote_status;
 
-				console.log(appointmentObjekt);
+				//console.log(appointmentObjekt);
 				var tbodyMain = $("#tableRows"); // Zugriff auf das tbody-Element
 
 				var tr = $("<tr></tr>").attr("id", id).addClass("h-12 hover:bg-amber-950/50"); // Erstellen einer neuen Zeile
@@ -234,13 +234,12 @@ function deleteAppointment(id) {
 	});
 }
 
-/*function createAppointment(
-	title,
-	location,
-	description,
-	duration,
-	voting_end_date
-) {
+function createAppointment() {
+	let title = $("#titleNewAppointment").val();
+	let location = $("#locationNewAppointment").val();
+	let description = $("#descriptionNewAppointment").val();
+	let duration = $("#durationNewAppointment").val();
+	let voting_end_date = $("#voting-end-dateNewAppointment").val();
 	const appointmentInfo = {
 		title: title,
 		location: location,
@@ -248,18 +247,29 @@ function deleteAppointment(id) {
 		duration: duration,
 		voting_end_date: voting_end_date,
 	};
+	console.log(appointmentInfo);
+
 	$.ajax({
-		url: "backend/serviceHandler.php",
+		url: "../backend/serviceHandler.php",
 		data: { method: "createAppointment", param: appointmentInfo },
-		method: "POST",
+		method: "GET",
 		success: function (response) {
 			console.log("Termin erstellt");
+			$("#createAppointment").hide();
+			$("#tableRows").empty();
+			loaddata();
+			$("#allAppointments").show();
+			$("#titleNewAppointment").val("");
+			$("#locationNewAppointment").val("");
+			$("#descriptionNewAppointment").val("");
+			$("#durationNewAppointment").val("");
+			$("#voting-end-dateNewAppointment").val("");
 		},
 		error: function (xhr, status, error) {
 			console.error("Fehler beim erstellen des Termins");
 		},
 	});
-}*/
+}
 
 function insertVotes(appointment_id) {
 	$("#insertVotesButton")
@@ -346,19 +356,27 @@ function createAppointmentSP() {
 		// Add the new option element to the options container
 		$("#options-container").append(newOption);
 	});
+	$("#createNewAppointment").click(function () {
+		createAppointment();
+	});
 
 	// Load existing appointments when the page loads
+	/*
 	$(document).ready(function () {
 		loadAppointments();
 	});
+	*/
 
 	// Handle form submission
+	/*
 	$("#create-appointment-form").submit(function (event) {
 		event.preventDefault();
 		createAppointment();
 	});
+	*/
 
 	// Load existing appointments from the server
+	/*
 	function loadAppointments() {
 		$.ajax({
 			url: "backend/serviceHandler.php",
@@ -377,8 +395,10 @@ function createAppointmentSP() {
 			},
 		});
 	}
+	*/
 
 	// Create a new appointment on the server
+	/*
 	function createAppointment() {
 		// Get the form data
 		var formData = $("#create-appointment-form")
@@ -395,11 +415,12 @@ function createAppointmentSP() {
 			success: function (response) {
 				console.log("Termin erstellt");
 				// Reload the appointments
-				loadAppointments();
+				//loadAppointments();
 			},
 			error: function (xhr, status, error) {
 				console.error("Fehler beim Erstellen des Termins");
 			},
 		});
 	}
+	*/
 }
